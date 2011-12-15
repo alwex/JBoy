@@ -1,6 +1,7 @@
 package com.alwex.jboy.hardware;
 
 import com.alwex.jboy.utils.Debug;
+import com.alwex.jboy.utils.Debugger;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -114,8 +115,13 @@ public class CPUTest
     public void processMarioOpcode()
     {
         System.out.println("=============== Mario ===============");
+        Debugger debugger = new Debugger();
+        debugger.setVisible(true);
+        
         theCpu.init();
-        theCpu.setRom(theMemory.read("C:\\GAMES\\ds\\gameboyColor\\roms\\Mario_Land.gb"));
+//        theCpu.setRom(theMemory.read("C:\\GAMES\\ds\\gameboyColor\\roms\\Mario_Land.gb"));
+        theCpu.setRom(theMemory.read("src/main/resources/test.gb"));
+
         Debug.dumpRom(theCpu.memory, 0x0000, 0x00ff);
         // NOP
         theCpu.processOpCode();
@@ -185,7 +191,7 @@ public class CPUTest
         theCpu.init();
         theCpu.setRom(theMemory.read("C:\\GAMES\\ds\\gameboyColor\\roms\\Tetris.gb"));
         Debug.dumpRom(theCpu.memory, 0x0000, 0x00ff);
-        
+
         theCpu.processOpCode();
         theCpu.processOpCode();
         theCpu.processOpCode();
@@ -198,7 +204,7 @@ public class CPUTest
         theCpu.processOpCode();
         theCpu.processOpCode();
         theCpu.processOpCode();
-        
+
         theCpu.processOpCode();
         theCpu.processOpCode();
         theCpu.processOpCode();
@@ -211,5 +217,37 @@ public class CPUTest
         theCpu.processOpCode();
         theCpu.processOpCode();
         theCpu.processOpCode();
+    }
+
+    @Test
+    public void byteCombinationTest()
+    {
+        byte a, b;
+
+        a = 0x00;
+        b = 0x00;
+
+        assertEquals(0x0000, theCpu.combine(a, b));
+
+        a = 0x00;
+        b = (byte) 0xFF;
+
+        assertEquals(0x00FF, theCpu.combine(a, b));
+
+        a = (byte) 0xFF;
+        b = (byte) 0xFF;
+
+        assertEquals(0xFFFF, theCpu.combine(a, b));
+
+        a = (byte) 0xAB;
+        b = (byte) 0xCD;
+
+        assertEquals(0xABCD, theCpu.combine(a, b));
+
+        a = (byte) 0xFD;
+        b = (byte) 0x05;
+
+        assertEquals(0xFD05, theCpu.combine(a, b));
+
     }
 }

@@ -33,7 +33,7 @@ public class MEM extends AbstractHardware
         return instance;
     }
 
-    public static byte[] read(String filename)
+    public byte[] read(String filename)
     {
         byte[] bytes = null;
         try

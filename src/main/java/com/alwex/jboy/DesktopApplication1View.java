@@ -4,6 +4,7 @@
 
 package com.alwex.jboy;
 
+import com.alwex.jboy.utils.Debugger;
 import org.jdesktop.application.Action;
 import org.jdesktop.application.ResourceMap;
 import org.jdesktop.application.SingleFrameApplication;
@@ -104,6 +105,7 @@ public class DesktopApplication1View extends FrameView {
         menuBar = new javax.swing.JMenuBar();
         javax.swing.JMenu fileMenu = new javax.swing.JMenu();
         javax.swing.JMenuItem exitMenuItem = new javax.swing.JMenuItem();
+        jMenuItem1 = new javax.swing.JMenuItem();
         javax.swing.JMenu helpMenu = new javax.swing.JMenu();
         javax.swing.JMenuItem aboutMenuItem = new javax.swing.JMenuItem();
         statusPanel = new javax.swing.JPanel();
@@ -122,7 +124,7 @@ public class DesktopApplication1View extends FrameView {
         );
         mainPanelLayout.setVerticalGroup(
             mainPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(0, 252, Short.MAX_VALUE)
+            .add(0, 248, Short.MAX_VALUE)
         );
 
         menuBar.setName("menuBar"); // NOI18N
@@ -135,6 +137,11 @@ public class DesktopApplication1View extends FrameView {
         exitMenuItem.setAction(actionMap.get("quit")); // NOI18N
         exitMenuItem.setName("exitMenuItem"); // NOI18N
         fileMenu.add(exitMenuItem);
+
+        jMenuItem1.setAction(actionMap.get("showDebugger")); // NOI18N
+        jMenuItem1.setText(resourceMap.getString("jMenuItem1.text")); // NOI18N
+        jMenuItem1.setName("jMenuItem1"); // NOI18N
+        fileMenu.add(jMenuItem1);
 
         menuBar.add(fileMenu);
 
@@ -166,7 +173,7 @@ public class DesktopApplication1View extends FrameView {
             .add(statusPanelLayout.createSequentialGroup()
                 .addContainerGap()
                 .add(statusMessageLabel)
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, 226, Short.MAX_VALUE)
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, 216, Short.MAX_VALUE)
                 .add(progressBar, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(statusAnimationLabel)
@@ -189,7 +196,19 @@ public class DesktopApplication1View extends FrameView {
         setStatusBar(statusPanel);
     }// </editor-fold>//GEN-END:initComponents
 
+    @Action
+    public void showDebugger()
+    {
+        if (debugger == null) {
+            JFrame mainFrame = DesktopApplication1.getApplication().getMainFrame();
+            debugger = new DebuggerView();
+            debugger.setLocationRelativeTo(mainFrame);
+        }
+        DesktopApplication1.getApplication().show(debugger);
+    }
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JMenuItem jMenuItem1;
     private javax.swing.JPanel mainPanel;
     private javax.swing.JMenuBar menuBar;
     private javax.swing.JProgressBar progressBar;
@@ -205,4 +224,5 @@ public class DesktopApplication1View extends FrameView {
     private int busyIconIndex = 0;
 
     private JDialog aboutBox;
+    private JFrame debugger;
 }

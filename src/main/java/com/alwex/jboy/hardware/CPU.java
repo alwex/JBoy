@@ -47,7 +47,7 @@ public class CPU extends AbstractHardware
             // or two when using the CP instruction
             // * N Substract flag, set if a substraction was
             // performed in the last math instruction
-            // * H Half carry flag is set if a carry occured
+            // * H Half carry flag is set if a carry occurred
             // from the lower nibble in the last math operation
             // * Carry flag, is set if a carry occured from the
             // last math operation or if register A is the
@@ -238,7 +238,7 @@ public class CPU extends AbstractHardware
                 PC++;
                 break;
 
-            case 0x2F: // CPL complément A, inverse tous les bits de A
+            case 0x2F: // CPL complï¿½ment A, inverse tous les bits de A
                 A = (byte) ~A;
                 setF(F_N, 1);
                 setF(F_H, 1);
@@ -333,7 +333,7 @@ public class CPU extends AbstractHardware
                 PC += 2;
                 break;
 
-            case 0xEA: // LD a16, A (placer A en mémoire à l'adresse a16 (deux prochain octets)
+            case 0xEA: // LD a16, A (placer A en mï¿½moire ï¿½ l'adresse a16 (deux prochain octets)
                 memory[this.combine(memory[PC + 2], memory[PC + 1])] = A;
                 PC += 3;
                 break;
@@ -423,7 +423,7 @@ public class CPU extends AbstractHardware
     }
 
     /**
-     * récupère la valeure du bit
+     * rï¿½cupï¿½re la valeure du bit
      * 
      * @param flag
      * @return 

@@ -6,25 +6,35 @@ package com.alwex.jboy.utils;
  */
 public class UnsignedByte
 {
+    /**
+     * valeur de l'octet
+     */
     byte value;
+
     public UnsignedByte(byte aValue)
     {
         this.value = aValue;
     }
 
-    public void shiftLeft(int shift)
+    public byte shiftLeft(int shift)
     {
-        this.value = (byte) (this.value << shift);
+        return (byte) (this.value << shift);
     }
 
-    public void shiftRight(int shift)
+    public byte shiftRight(int shift)
     {
-        this.value = (byte) (this.value >> shift);
+        return (byte) (this.value >> shift);
     }
 
     public void bitwise()
     {
         
+    }
+
+    public int combine(byte a, byte b)
+    {
+        int result = ((((a << 8) & 0xffff | b & 0xff) & 0x0000ffff) & 0xffff);
+        return result;
     }
 
     @Override
