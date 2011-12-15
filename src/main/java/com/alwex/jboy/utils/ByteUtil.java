@@ -33,7 +33,7 @@ public class ByteUtil
         {
             out = "0" + out;
         }
-        return "0x" + out;
+        return out;
     }
 
     public static String toHex(short value)
@@ -43,6 +43,6 @@ public class ByteUtil
         {
             out = "0" + out;
         }
-        return "0x" + out;
+        return out;
     }
 }
