@@ -45,7 +45,6 @@ public class DebuggerView extends javax.swing.JFrame
         DefaultListModel model = new DefaultListModel();
         memoryList.setModel(model);
 
-        System.out.println(theCpu.memory.length);
         int i = 1;
         short adress = 0;
         String aLine = "";
@@ -56,11 +55,31 @@ public class DebuggerView extends javax.swing.JFrame
             {
                 aLine = ByteUtil.toHex(adress) + ":" + aLine;
                 model.addElement(aLine);
-                adress++;
+                adress += 16;
                 aLine = "";
             }
             i++;
         }
+
+        this.updateValues();
+    }
+
+    /**
+     * met à jour les valeurs du débugger
+     */
+    public void updateValues()
+    {
+        PCTextfield.setText(ByteUtil.toHex(theCpu.PC));
+        ATextfield.setText(ByteUtil.toHex(theCpu.A));
+        BTextfield.setText(ByteUtil.toHex(theCpu.B));
+        CTextfield.setText(ByteUtil.toHex(theCpu.C));
+        DTextfield.setText(ByteUtil.toHex(theCpu.D));
+        ETextfield.setText(ByteUtil.toHex(theCpu.E));
+        FTextfield.setText(ByteUtil.toHex(theCpu.F));
+        FZTextfield.setText(String.valueOf(theCpu.getF(theCpu.F_Z)));
+        FNTextfield.setText(String.valueOf(theCpu.getF(theCpu.F_N)));
+        FHTextfield.setText(String.valueOf(theCpu.getF(theCpu.F_H)));
+        FCTextfield.setText(String.valueOf(theCpu.getF(theCpu.F_C)));
     }
 
     /** This method is called from within the constructor to
@@ -78,6 +97,26 @@ public class DebuggerView extends javax.swing.JFrame
         memoryList = new javax.swing.JList();
         runButton = new javax.swing.JButton();
         stepButton = new javax.swing.JButton();
+        jLabel1 = new javax.swing.JLabel();
+        PCTextfield = new javax.swing.JTextField();
+        pauseButton = new javax.swing.JToggleButton();
+        jLabel2 = new javax.swing.JLabel();
+        jLabel3 = new javax.swing.JLabel();
+        jLabel4 = new javax.swing.JLabel();
+        ATextfield = new javax.swing.JTextField();
+        BTextfield = new javax.swing.JTextField();
+        DTextfield = new javax.swing.JTextField();
+        jLabel5 = new javax.swing.JLabel();
+        jLabel6 = new javax.swing.JLabel();
+        jLabel7 = new javax.swing.JLabel();
+        FTextfield = new javax.swing.JTextField();
+        FZTextfield = new javax.swing.JTextField();
+        CTextfield = new javax.swing.JTextField();
+        ETextfield = new javax.swing.JTextField();
+        FNTextfield = new javax.swing.JTextField();
+        FHTextfield = new javax.swing.JTextField();
+        FCTextfield = new javax.swing.JTextField();
+        resetButton = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setName("Form"); // NOI18N
@@ -99,6 +138,76 @@ public class DebuggerView extends javax.swing.JFrame
 
         stepButton.setText(resourceMap.getString("stepButton.text")); // NOI18N
         stepButton.setName("stepButton"); // NOI18N
+        stepButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                stepButtonActionPerformed(evt);
+            }
+        });
+
+        jLabel1.setText(resourceMap.getString("jLabel1.text")); // NOI18N
+        jLabel1.setName("jLabel1"); // NOI18N
+
+        PCTextfield.setText(resourceMap.getString("PCTextfield.text")); // NOI18N
+        PCTextfield.setName("PCTextfield"); // NOI18N
+
+        pauseButton.setText(resourceMap.getString("pauseButton.text")); // NOI18N
+        pauseButton.setName("pauseButton"); // NOI18N
+
+        jLabel2.setText(resourceMap.getString("jLabel2.text")); // NOI18N
+        jLabel2.setName("jLabel2"); // NOI18N
+
+        jLabel3.setText(resourceMap.getString("jLabel3.text")); // NOI18N
+        jLabel3.setName("jLabel3"); // NOI18N
+
+        jLabel4.setText(resourceMap.getString("jLabel4.text")); // NOI18N
+        jLabel4.setName("jLabel4"); // NOI18N
+
+        ATextfield.setText(resourceMap.getString("ATextfield.text")); // NOI18N
+        ATextfield.setName("ATextfield"); // NOI18N
+
+        BTextfield.setText(resourceMap.getString("BTextfield.text")); // NOI18N
+        BTextfield.setName("BTextfield"); // NOI18N
+
+        DTextfield.setText(resourceMap.getString("DTextfield.text")); // NOI18N
+        DTextfield.setName("DTextfield"); // NOI18N
+
+        jLabel5.setText(resourceMap.getString("jLabel5.text")); // NOI18N
+        jLabel5.setName("jLabel5"); // NOI18N
+
+        jLabel6.setText(resourceMap.getString("jLabel6.text")); // NOI18N
+        jLabel6.setName("jLabel6"); // NOI18N
+
+        jLabel7.setText(resourceMap.getString("jLabel7.text")); // NOI18N
+        jLabel7.setName("jLabel7"); // NOI18N
+
+        FTextfield.setText(resourceMap.getString("FTextfield.text")); // NOI18N
+        FTextfield.setName("FTextfield"); // NOI18N
+
+        FZTextfield.setText(resourceMap.getString("FZTextfield.text")); // NOI18N
+        FZTextfield.setName("FZTextfield"); // NOI18N
+
+        CTextfield.setText(resourceMap.getString("CTextfield.text")); // NOI18N
+        CTextfield.setName("CTextfield"); // NOI18N
+
+        ETextfield.setText(resourceMap.getString("ETextfield.text")); // NOI18N
+        ETextfield.setName("ETextfield"); // NOI18N
+
+        FNTextfield.setText(resourceMap.getString("FNTextfield.text")); // NOI18N
+        FNTextfield.setName("FNTextfield"); // NOI18N
+
+        FHTextfield.setText(resourceMap.getString("FHTextfield.text")); // NOI18N
+        FHTextfield.setName("FHTextfield"); // NOI18N
+
+        FCTextfield.setText(resourceMap.getString("FCTextfield.text")); // NOI18N
+        FCTextfield.setName("FCTextfield"); // NOI18N
+
+        resetButton.setText(resourceMap.getString("resetButton.text")); // NOI18N
+        resetButton.setName("resetButton"); // NOI18N
+        resetButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                resetButtonActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -106,13 +215,55 @@ public class DebuggerView extends javax.swing.JFrame
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 260, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 260, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 19, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                                    .addComponent(jLabel4)
+                                    .addGap(18, 18, 18)
+                                    .addComponent(DTextfield))
+                                .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                                    .addComponent(jLabel1)
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                        .addComponent(ATextfield, javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addComponent(PCTextfield, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 39, Short.MAX_VALUE)
+                                        .addComponent(BTextfield, javax.swing.GroupLayout.Alignment.LEADING))))
+                            .addComponent(jLabel3))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jLabel7)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(ETextfield, 0, 0, Short.MAX_VALUE))
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                .addComponent(jLabel6)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(CTextfield, 0, 0, Short.MAX_VALUE))
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jLabel5)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(FTextfield, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(FZTextfield, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(FNTextfield, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(FHTextfield, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(FCTextfield, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 425, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                    .addComponent(runButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(stepButton, javax.swing.GroupLayout.DEFAULT_SIZE, 107, Short.MAX_VALUE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                        .addComponent(pauseButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(runButton, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(stepButton, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 107, Short.MAX_VALUE))
+                    .addComponent(resetButton, javax.swing.GroupLayout.DEFAULT_SIZE, 107, Short.MAX_VALUE))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -121,16 +272,69 @@ public class DebuggerView extends javax.swing.JFrame
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 387, Short.MAX_VALUE)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 387, Short.MAX_VALUE)
                     .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
                         .addComponent(runButton)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(stepButton)))
+                        .addComponent(stepButton)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(pauseButton)
+                        .addGap(18, 18, 18)
+                        .addComponent(resetButton))
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel1)
+                            .addComponent(PCTextfield, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(18, 18, 18)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel2)
+                            .addComponent(ATextfield, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel5)
+                            .addComponent(FTextfield, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(FZTextfield, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(FNTextfield, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(FHTextfield, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(FCTextfield, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(12, 12, 12)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel3)
+                            .addComponent(BTextfield, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel6)
+                            .addComponent(CTextfield, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel4)
+                            .addComponent(DTextfield, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel7)
+                            .addComponent(ETextfield, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
                 .addContainerGap())
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    /**
+     * on avance d'un pas dans l'execution de la rom
+     * 
+     * @param evt
+     */
+    private void stepButtonActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_stepButtonActionPerformed
+    {//GEN-HEADEREND:event_stepButtonActionPerformed
+        theCpu.processOpCode();
+        updateValues();
+    }//GEN-LAST:event_stepButtonActionPerformed
+
+    /**
+     * remet à zéro l'émulation
+     * 
+     * @param evt 
+     */
+    private void resetButtonActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_resetButtonActionPerformed
+    {//GEN-HEADEREND:event_resetButtonActionPerformed
+        theCpu.init();
+        updateValues();
+    }//GEN-LAST:event_resetButtonActionPerformed
 
     /**
      * @param args the command line arguments
@@ -182,10 +386,30 @@ public class DebuggerView extends javax.swing.JFrame
         });
     }
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JTextField ATextfield;
+    private javax.swing.JTextField BTextfield;
+    private javax.swing.JTextField CTextfield;
+    private javax.swing.JTextField DTextfield;
+    private javax.swing.JTextField ETextfield;
+    private javax.swing.JTextField FCTextfield;
+    private javax.swing.JTextField FHTextfield;
+    private javax.swing.JTextField FNTextfield;
+    private javax.swing.JTextField FTextfield;
+    private javax.swing.JTextField FZTextfield;
+    private javax.swing.JTextField PCTextfield;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel jLabel6;
+    private javax.swing.JLabel jLabel7;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JList memoryList;
     private javax.swing.JList opCodeList;
+    private javax.swing.JToggleButton pauseButton;
+    private javax.swing.JButton resetButton;
     private javax.swing.JButton runButton;
     private javax.swing.JButton stepButton;
     // End of variables declaration//GEN-END:variables
