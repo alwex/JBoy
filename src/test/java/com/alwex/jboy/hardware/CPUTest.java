@@ -115,9 +115,7 @@ public class CPUTest
     public void processMarioOpcode()
     {
         System.out.println("=============== Mario ===============");
-        Debugger debugger = new Debugger();
-        debugger.setVisible(true);
-        
+
         theCpu.init();
 //        theCpu.setRom(theMemory.read("C:\\GAMES\\ds\\gameboyColor\\roms\\Mario_Land.gb"));
         theCpu.setRom(theMemory.read("src/main/resources/test.gb"));

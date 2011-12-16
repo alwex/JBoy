@@ -105,4 +105,18 @@ public class Sandbox
         
         System.out.println(Debug.toHex( (short)(b+s) ));
     }
+
+    @Test
+    public void testStringBuilder()
+    {
+        StringBuilder s = new StringBuilder();
+        s.append("test");
+        assertEquals("test", s.toString());
+
+        s.append("truc");
+        assertEquals("testtruc", s.toString());
+
+        String a = String.format("LD %s, %s, in %s", "0x00", "0x12", "0xFC");
+        System.out.println(a);
+    }
 }
