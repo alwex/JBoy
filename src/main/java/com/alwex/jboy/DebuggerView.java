@@ -119,6 +119,10 @@ public class DebuggerView extends javax.swing.JFrame
         FNTextfield = new javax.swing.JTextField();
         FCTextfield = new javax.swing.JTextField();
         FHTextfield = new javax.swing.JTextField();
+        FZLabel = new javax.swing.JLabel();
+        FNLabel = new javax.swing.JLabel();
+        FHLabel = new javax.swing.JLabel();
+        FCLabel = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setName("Form"); // NOI18N
@@ -130,7 +134,7 @@ public class DebuggerView extends javax.swing.JFrame
 
         jScrollPane2.setName("jScrollPane2"); // NOI18N
 
-        org.jdesktop.application.ResourceMap resourceMap = org.jdesktop.application.Application.getInstance(com.alwex.jboy.DesktopApplication1.class).getContext().getResourceMap(DebuggerView.class);
+        org.jdesktop.application.ResourceMap resourceMap = org.jdesktop.application.Application.getInstance().getContext().getResourceMap(DebuggerView.class);
         memoryList.setFont(resourceMap.getFont("memoryList.font")); // NOI18N
         memoryList.setName("memoryList"); // NOI18N
         jScrollPane2.setViewportView(memoryList);
@@ -167,23 +171,25 @@ public class DebuggerView extends javax.swing.JFrame
         gridBagConstraints.gridy = 1;
         gridBagConstraints.ipadx = 10;
         gridBagConstraints.ipady = 10;
+        gridBagConstraints.insets = new java.awt.Insets(0, 10, 0, 0);
         RegistersPanel.add(ALabel, gridBagConstraints);
 
         ATextfield.setText(resourceMap.getString("ATextfield.text")); // NOI18N
         ATextfield.setName("ATextfield"); // NOI18N
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
-        gridBagConstraints.gridy = 3;
+        gridBagConstraints.gridy = 1;
         gridBagConstraints.ipadx = 35;
         RegistersPanel.add(ATextfield, gridBagConstraints);
 
         FLabel.setText(resourceMap.getString("FLabel.text")); // NOI18N
         FLabel.setName("FLabel"); // NOI18N
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 2;
+        gridBagConstraints.gridx = 3;
         gridBagConstraints.gridy = 1;
         gridBagConstraints.ipadx = 10;
         gridBagConstraints.ipady = 10;
+        gridBagConstraints.insets = new java.awt.Insets(0, 10, 0, 0);
         RegistersPanel.add(FLabel, gridBagConstraints);
 
         BLabel.setText(resourceMap.getString("BLabel.text")); // NOI18N
@@ -193,6 +199,7 @@ public class DebuggerView extends javax.swing.JFrame
         gridBagConstraints.gridy = 2;
         gridBagConstraints.ipadx = 10;
         gridBagConstraints.ipady = 10;
+        gridBagConstraints.insets = new java.awt.Insets(0, 10, 0, 0);
         RegistersPanel.add(BLabel, gridBagConstraints);
 
         PCTextfield.setText(resourceMap.getString("PCTextfield.text")); // NOI18N
@@ -207,17 +214,18 @@ public class DebuggerView extends javax.swing.JFrame
         BTextfield.setName("BTextfield"); // NOI18N
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
-        gridBagConstraints.gridy = 1;
+        gridBagConstraints.gridy = 2;
         gridBagConstraints.ipadx = 35;
         RegistersPanel.add(BTextfield, gridBagConstraints);
 
         CLabel.setText(resourceMap.getString("CLabel.text")); // NOI18N
         CLabel.setName("CLabel"); // NOI18N
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 2;
+        gridBagConstraints.gridx = 3;
         gridBagConstraints.gridy = 2;
         gridBagConstraints.ipadx = 10;
         gridBagConstraints.ipady = 10;
+        gridBagConstraints.insets = new java.awt.Insets(0, 10, 0, 0);
         RegistersPanel.add(CLabel, gridBagConstraints);
 
         DLabel.setText(resourceMap.getString("DLabel.text")); // NOI18N
@@ -227,23 +235,25 @@ public class DebuggerView extends javax.swing.JFrame
         gridBagConstraints.gridy = 3;
         gridBagConstraints.ipadx = 10;
         gridBagConstraints.ipady = 10;
+        gridBagConstraints.insets = new java.awt.Insets(0, 10, 0, 0);
         RegistersPanel.add(DLabel, gridBagConstraints);
 
         DTextfield.setText(resourceMap.getString("DTextfield.text")); // NOI18N
         DTextfield.setName("DTextfield"); // NOI18N
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
-        gridBagConstraints.gridy = 2;
+        gridBagConstraints.gridy = 3;
         gridBagConstraints.ipadx = 35;
         RegistersPanel.add(DTextfield, gridBagConstraints);
 
         ELabel.setText(resourceMap.getString("ELabel.text")); // NOI18N
         ELabel.setName("ELabel"); // NOI18N
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 2;
+        gridBagConstraints.gridx = 3;
         gridBagConstraints.gridy = 3;
         gridBagConstraints.ipadx = 10;
         gridBagConstraints.ipady = 10;
+        gridBagConstraints.insets = new java.awt.Insets(0, 10, 0, 0);
         RegistersPanel.add(ELabel, gridBagConstraints);
 
         PCLabel.setText(resourceMap.getString("PCLabel.text")); // NOI18N
@@ -253,12 +263,13 @@ public class DebuggerView extends javax.swing.JFrame
         gridBagConstraints.gridy = 0;
         gridBagConstraints.ipadx = 10;
         gridBagConstraints.ipady = 10;
+        gridBagConstraints.insets = new java.awt.Insets(0, 10, 0, 0);
         RegistersPanel.add(PCLabel, gridBagConstraints);
 
         FTextfield.setText(resourceMap.getString("FTextfield.text")); // NOI18N
         FTextfield.setName("FTextfield"); // NOI18N
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 3;
+        gridBagConstraints.gridx = 4;
         gridBagConstraints.gridy = 1;
         gridBagConstraints.ipadx = 35;
         RegistersPanel.add(FTextfield, gridBagConstraints);
@@ -266,50 +277,78 @@ public class DebuggerView extends javax.swing.JFrame
         CTextfield.setText(resourceMap.getString("CTextfield.text")); // NOI18N
         CTextfield.setName("CTextfield"); // NOI18N
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 3;
-        gridBagConstraints.gridy = 3;
+        gridBagConstraints.gridx = 4;
+        gridBagConstraints.gridy = 2;
         gridBagConstraints.ipadx = 35;
         RegistersPanel.add(CTextfield, gridBagConstraints);
 
         FZTextfield.setText(resourceMap.getString("FZTextfield.text")); // NOI18N
         FZTextfield.setName("FZTextfield"); // NOI18N
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 4;
-        gridBagConstraints.gridy = 2;
+        gridBagConstraints.gridx = 5;
+        gridBagConstraints.gridy = 1;
         gridBagConstraints.ipadx = 10;
         RegistersPanel.add(FZTextfield, gridBagConstraints);
 
         ETextfield.setText(resourceMap.getString("ETextfield.text")); // NOI18N
         ETextfield.setName("ETextfield"); // NOI18N
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 3;
-        gridBagConstraints.gridy = 2;
+        gridBagConstraints.gridx = 4;
+        gridBagConstraints.gridy = 3;
         gridBagConstraints.ipadx = 35;
         RegistersPanel.add(ETextfield, gridBagConstraints);
 
         FNTextfield.setText(resourceMap.getString("FNTextfield.text")); // NOI18N
         FNTextfield.setName("FNTextfield"); // NOI18N
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 5;
-        gridBagConstraints.gridy = 2;
+        gridBagConstraints.gridx = 6;
+        gridBagConstraints.gridy = 1;
         gridBagConstraints.ipadx = 10;
         RegistersPanel.add(FNTextfield, gridBagConstraints);
 
         FCTextfield.setText(resourceMap.getString("FCTextfield.text")); // NOI18N
         FCTextfield.setName("FCTextfield"); // NOI18N
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 7;
-        gridBagConstraints.gridy = 2;
+        gridBagConstraints.gridx = 8;
+        gridBagConstraints.gridy = 1;
         gridBagConstraints.ipadx = 10;
         RegistersPanel.add(FCTextfield, gridBagConstraints);
 
         FHTextfield.setText(resourceMap.getString("FHTextfield.text")); // NOI18N
         FHTextfield.setName("FHTextfield"); // NOI18N
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 6;
-        gridBagConstraints.gridy = 2;
+        gridBagConstraints.gridx = 7;
+        gridBagConstraints.gridy = 1;
         gridBagConstraints.ipadx = 10;
         RegistersPanel.add(FHTextfield, gridBagConstraints);
+
+        FZLabel.setText(resourceMap.getString("FZLabel.text")); // NOI18N
+        FZLabel.setName("FZLabel"); // NOI18N
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 5;
+        gridBagConstraints.gridy = 0;
+        RegistersPanel.add(FZLabel, gridBagConstraints);
+
+        FNLabel.setText(resourceMap.getString("FNLabel.text")); // NOI18N
+        FNLabel.setName("FNLabel"); // NOI18N
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 6;
+        gridBagConstraints.gridy = 0;
+        RegistersPanel.add(FNLabel, gridBagConstraints);
+
+        FHLabel.setText(resourceMap.getString("FHLabel.text")); // NOI18N
+        FHLabel.setName("FHLabel"); // NOI18N
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 7;
+        gridBagConstraints.gridy = 0;
+        RegistersPanel.add(FHLabel, gridBagConstraints);
+
+        FCLabel.setText(resourceMap.getString("FCLabel.text")); // NOI18N
+        FCLabel.setName("FCLabel"); // NOI18N
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 8;
+        gridBagConstraints.gridy = 0;
+        RegistersPanel.add(FCLabel, gridBagConstraints);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -318,16 +357,16 @@ public class DebuggerView extends javax.swing.JFrame
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(RegistersPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 264, Short.MAX_VALUE)
+                    .addComponent(RegistersPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 269, Short.MAX_VALUE)
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 496, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(runButton, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 79, Short.MAX_VALUE)
-                    .addComponent(stepButton, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 79, Short.MAX_VALUE)
-                    .addComponent(resetButton, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 79, Short.MAX_VALUE)
-                    .addComponent(pauseButton, javax.swing.GroupLayout.DEFAULT_SIZE, 79, Short.MAX_VALUE))
+                    .addComponent(runButton, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 74, Short.MAX_VALUE)
+                    .addComponent(stepButton, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 74, Short.MAX_VALUE)
+                    .addComponent(resetButton, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 74, Short.MAX_VALUE)
+                    .addComponent(pauseButton, javax.swing.GroupLayout.DEFAULT_SIZE, 74, Short.MAX_VALUE))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -436,11 +475,15 @@ public class DebuggerView extends javax.swing.JFrame
     private javax.swing.JTextField DTextfield;
     private javax.swing.JLabel ELabel;
     private javax.swing.JTextField ETextfield;
+    private javax.swing.JLabel FCLabel;
     private javax.swing.JTextField FCTextfield;
+    private javax.swing.JLabel FHLabel;
     private javax.swing.JTextField FHTextfield;
     private javax.swing.JLabel FLabel;
+    private javax.swing.JLabel FNLabel;
     private javax.swing.JTextField FNTextfield;
     private javax.swing.JTextField FTextfield;
+    private javax.swing.JLabel FZLabel;
     private javax.swing.JTextField FZTextfield;
     private javax.swing.JLabel PCLabel;
     private javax.swing.JTextField PCTextfield;
