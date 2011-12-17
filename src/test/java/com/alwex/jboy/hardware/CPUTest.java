@@ -188,7 +188,7 @@ public class CPUTest
     public void tetris()
     {
         theCpu.init();
-        theCpu.setRom(theMemory.read("C:\\GAMES\\ds\\gameboyColor\\roms\\Tetris.gb"));
+        theCpu.setRom(theMemory.read("src/main/resources/test2.gb"));
         Debug.dumpRom(theCpu.memory, 0x0000, 0x00ff);
 
         theCpu.processOpCode();

@@ -151,4 +151,10 @@ public class Sandbox
             i++;
         }
     }
+    
+    @Test
+    public void testNegative()
+    {
+        System.out.println((byte) 0xfc);
+    }
 }

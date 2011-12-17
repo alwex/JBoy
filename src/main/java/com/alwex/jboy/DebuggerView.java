@@ -10,6 +10,7 @@ import com.alwex.jboy.hardware.MEM;
 import com.alwex.jboy.utils.ByteUtil;
 import com.alwex.jboy.utils.Debugger;
 import com.alwex.jboy.utils.UnsignedByte;
+import java.awt.event.KeyEvent;
 import javax.swing.DefaultListModel;
 
 /**
@@ -29,7 +30,7 @@ public class DebuggerView extends javax.swing.JFrame
         MEM theMemory = new MEM();
 
         theCpu.init();
-        theCpu.setRom(theMemory.read("src/main/resources/test.gb"));
+        theCpu.setRom(theMemory.read("src/main/resources/test2.gb"));
 
         initComponents();
 
@@ -45,10 +46,10 @@ public class DebuggerView extends javax.swing.JFrame
     public void loadValues()
     {
         theDebugger = new Debugger(theCpu.memory);
-        
+
         DefaultListModel memoryModel = new DefaultListModel();
         memoryList.setModel(memoryModel);
-        
+
         DefaultListModel opCodeModel = new DefaultListModel();
         opCodeList.setModel(opCodeModel);
 
@@ -66,7 +67,7 @@ public class DebuggerView extends javax.swing.JFrame
                 adress += 16;
                 aLine = "";
             }
-            
+
             // affichage instructions
             opCodeModel.addElement(theDebugger.parse(i - 1));
             i++;
@@ -91,7 +92,9 @@ public class DebuggerView extends javax.swing.JFrame
         FNTextfield.setText(String.valueOf(theCpu.getF(theCpu.F_N)));
         FHTextfield.setText(String.valueOf(theCpu.getF(theCpu.F_H)));
         FCTextfield.setText(String.valueOf(theCpu.getF(theCpu.F_C)));
-        
+
+        HLTextfield.setText(ByteUtil.toHex((short) ByteUtil.combine(theCpu.H, theCpu.L)));
+        SPTextfield.setText(ByteUtil.toHex((short) theCpu.SP));
         opCodeList.setSelectedIndex(theCpu.PC);
         opCodeList.ensureIndexIsVisible(theCpu.PC);
     }
@@ -106,9 +109,9 @@ public class DebuggerView extends javax.swing.JFrame
     private void initComponents() {
         java.awt.GridBagConstraints gridBagConstraints;
 
-        jScrollPane1 = new javax.swing.JScrollPane();
+        opCodesScrollPane = new javax.swing.JScrollPane();
         opCodeList = new javax.swing.JList();
-        jScrollPane2 = new javax.swing.JScrollPane();
+        memoryScrollPane = new javax.swing.JScrollPane();
         memoryList = new javax.swing.JList();
         runButton = new javax.swing.JButton();
         stepButton = new javax.swing.JButton();
@@ -137,25 +140,36 @@ public class DebuggerView extends javax.swing.JFrame
         FNLabel = new javax.swing.JLabel();
         FHLabel = new javax.swing.JLabel();
         FCLabel = new javax.swing.JLabel();
+        HLLabel = new javax.swing.JLabel();
+        HLTextfield = new javax.swing.JTextField();
+        SPTextfield = new javax.swing.JTextField();
+        SPLabel = new javax.swing.JLabel();
+        stepTextfield = new javax.swing.JTextField();
+        runTextfield = new javax.swing.JTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setName("Form"); // NOI18N
 
-        jScrollPane1.setName("jScrollPane1"); // NOI18N
+        opCodesScrollPane.setName("opCodesScrollPane"); // NOI18N
 
         org.jdesktop.application.ResourceMap resourceMap = org.jdesktop.application.Application.getInstance().getContext().getResourceMap(DebuggerView.class);
         opCodeList.setFont(resourceMap.getFont("opcCodeList.font")); // NOI18N
         opCodeList.setName("opcCodeList"); // NOI18N
-        jScrollPane1.setViewportView(opCodeList);
+        opCodesScrollPane.setViewportView(opCodeList);
 
-        jScrollPane2.setName("jScrollPane2"); // NOI18N
+        memoryScrollPane.setName("memoryScrollPane"); // NOI18N
 
         memoryList.setFont(resourceMap.getFont("memoryList.font")); // NOI18N
         memoryList.setName("memoryList"); // NOI18N
-        jScrollPane2.setViewportView(memoryList);
+        memoryScrollPane.setViewportView(memoryList);
 
         runButton.setText(resourceMap.getString("runButton.text")); // NOI18N
         runButton.setName("runButton"); // NOI18N
+        runButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                runButtonActionPerformed(evt);
+            }
+        });
 
         stepButton.setText(resourceMap.getString("stepButton.text")); // NOI18N
         stepButton.setName("stepButton"); // NOI18N
@@ -365,6 +379,47 @@ public class DebuggerView extends javax.swing.JFrame
         gridBagConstraints.gridy = 0;
         RegistersPanel.add(FCLabel, gridBagConstraints);
 
+        HLLabel.setText(resourceMap.getString("HLLabel.text")); // NOI18N
+        HLLabel.setName("HLLabel"); // NOI18N
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 4;
+        RegistersPanel.add(HLLabel, gridBagConstraints);
+
+        HLTextfield.setText(resourceMap.getString("HLTextfield.text")); // NOI18N
+        HLTextfield.setName("HLTextfield"); // NOI18N
+        HLTextfield.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                HLTextfieldActionPerformed(evt);
+            }
+        });
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 4;
+        gridBagConstraints.ipadx = 35;
+        RegistersPanel.add(HLTextfield, gridBagConstraints);
+
+        SPTextfield.setText(resourceMap.getString("SPTextfield.text")); // NOI18N
+        SPTextfield.setName("SPTextfield"); // NOI18N
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 5;
+        gridBagConstraints.ipadx = 35;
+        RegistersPanel.add(SPTextfield, gridBagConstraints);
+
+        SPLabel.setText(resourceMap.getString("SPLabel.text")); // NOI18N
+        SPLabel.setName("SPLabel"); // NOI18N
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 5;
+        RegistersPanel.add(SPLabel, gridBagConstraints);
+
+        stepTextfield.setText(resourceMap.getString("stepTextfield.text")); // NOI18N
+        stepTextfield.setName("stepTextfield"); // NOI18N
+
+        runTextfield.setText(resourceMap.getString("runTextfield.text")); // NOI18N
+        runTextfield.setName("runTextfield"); // NOI18N
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -372,16 +427,18 @@ public class DebuggerView extends javax.swing.JFrame
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 312, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(RegistersPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(RegistersPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(opCodesScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 312, Short.MAX_VALUE))
                 .addGap(12, 12, 12)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 440, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(memoryScrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 440, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(runButton, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 85, Short.MAX_VALUE)
+                    .addComponent(runButton, javax.swing.GroupLayout.DEFAULT_SIZE, 85, Short.MAX_VALUE)
+                    .addComponent(stepTextfield, javax.swing.GroupLayout.DEFAULT_SIZE, 85, Short.MAX_VALUE)
                     .addComponent(stepButton, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 85, Short.MAX_VALUE)
-                    .addComponent(resetButton, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 85, Short.MAX_VALUE)
-                    .addComponent(pauseButton, javax.swing.GroupLayout.DEFAULT_SIZE, 85, Short.MAX_VALUE))
+                    .addComponent(pauseButton, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 85, Short.MAX_VALUE)
+                    .addComponent(resetButton, javax.swing.GroupLayout.DEFAULT_SIZE, 85, Short.MAX_VALUE)
+                    .addComponent(runTextfield, javax.swing.GroupLayout.DEFAULT_SIZE, 85, Short.MAX_VALUE))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -389,19 +446,23 @@ public class DebuggerView extends javax.swing.JFrame
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 403, Short.MAX_VALUE)
+                    .addComponent(memoryScrollPane, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 458, Short.MAX_VALUE)
                     .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
                         .addComponent(runButton)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(runTextfield, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(29, 29, 29)
                         .addComponent(stepButton)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(pauseButton)
+                        .addComponent(stepTextfield, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
-                        .addComponent(resetButton))
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 263, Short.MAX_VALUE)
+                        .addComponent(pauseButton)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(RegistersPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(resetButton))
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                        .addComponent(opCodesScrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 283, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(RegistersPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 165, Short.MAX_VALUE)))
                 .addContainerGap())
         );
 
@@ -415,12 +476,20 @@ public class DebuggerView extends javax.swing.JFrame
      */
     private void stepButtonActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_stepButtonActionPerformed
     {//GEN-HEADEREND:event_stepButtonActionPerformed
-        theCpu.processOpCode();
-        updateValues();
+        int steps = 1;
+        if (!"".equals(this.stepTextfield.getText()))
+        {
+            steps = Integer.parseInt(this.stepTextfield.getText());
+        }
+
+        for (int i = 0; i < steps; i++)
+        {
+            theCpu.processOpCode();
+            updateValues();
+        }
     }//GEN-LAST:event_stepButtonActionPerformed
 
     /**
-     * remet à zéro l'émulation
      * 
      * @param evt 
      */
@@ -429,6 +498,35 @@ public class DebuggerView extends javax.swing.JFrame
         theCpu.init();
         updateValues();
     }//GEN-LAST:event_resetButtonActionPerformed
+
+private void HLTextfieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_HLTextfieldActionPerformed
+// TODO add your handling code here:
+}//GEN-LAST:event_HLTextfieldActionPerformed
+
+private void runButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_runButtonActionPerformed
+// TODO add your handling code here:
+    int runTo = 0;
+    if (!"".equals(this.runTextfield.getText()))
+    {
+        runTo = Integer.parseInt(this.runTextfield.getText(), 16);
+    }
+
+    int beforePC = 0;
+    if (runTo > 0)
+    {
+        while (theCpu.PC != runTo)
+        {
+            beforePC = theCpu.PC;
+            theCpu.processOpCode();
+            updateValues();
+            if (beforePC == theCpu.PC)
+            {
+                break;
+            }
+        }
+    }
+
+}//GEN-LAST:event_runButtonActionPerformed
 
     /**
      * @param args the command line arguments
@@ -500,16 +598,22 @@ public class DebuggerView extends javax.swing.JFrame
     private javax.swing.JTextField FTextfield;
     private javax.swing.JLabel FZLabel;
     private javax.swing.JTextField FZTextfield;
+    private javax.swing.JLabel HLLabel;
+    private javax.swing.JTextField HLTextfield;
     private javax.swing.JLabel PCLabel;
     private javax.swing.JTextField PCTextfield;
     private java.awt.Panel RegistersPanel;
-    private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JLabel SPLabel;
+    private javax.swing.JTextField SPTextfield;
     private javax.swing.JList memoryList;
+    private javax.swing.JScrollPane memoryScrollPane;
     private javax.swing.JList opCodeList;
+    private javax.swing.JScrollPane opCodesScrollPane;
     private javax.swing.JToggleButton pauseButton;
     private javax.swing.JButton resetButton;
     private javax.swing.JButton runButton;
+    private javax.swing.JTextField runTextfield;
     private javax.swing.JButton stepButton;
+    private javax.swing.JTextField stepTextfield;
     // End of variables declaration//GEN-END:variables
 }

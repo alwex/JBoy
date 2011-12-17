@@ -14,6 +14,14 @@ import org.apache.log4j.Logger;
 public class CPU extends AbstractHardware
 {
 
+    /**
+     * identifie les différents registres
+     */
+    public enum Register
+    {
+
+        A, B, C, D, E, F, H, L, HL, BC, DE, SP, F_C, F_H, F_N, F_Z;
+    }
     protected static Logger logger;
     private static CPU instance;
     public String[] opCodeDescription =
@@ -35,7 +43,8 @@ public class CPU extends AbstractHardware
         /*0xE0*/ "LDH (a8),A", /*0xE1*/ "", /*0xE2*/ "", /*0xE3*/ "", /*0xE4*/ "", /*0xE5*/ "", /*0xE6*/ "", /*0xE7*/ "", /*0xE8*/ "", /*0xE9*/ "", /*0xEA*/ "", /*0xEB*/ "", /*0xEC*/ "", /*0xED*/ "", /*0xEE*/ "", /*0xEF*/ "",
         /*0xF0*/ "LDH A,(a8)", /*0xF1*/ "", /*0xF2*/ "", /*0xF3*/ "DI", /*0xF4*/ "", /*0xF5*/ "", /*0xF6*/ "", /*0xF7*/ "", /*0xF8*/ "", /*0xF9*/ "", /*0xFA*/ "", /*0xFB*/ "", /*0xFC*/ "", /*0xFD*/ "", /*0xFE*/ "CP d8", /*0xFF*/ ""
     };
-    public int F_C = 4, F_H = 5, F_N = 6, F_Z = 7;
+    public final int F_C = 4, F_H = 5, F_N = 6, F_Z = 7;
+    // registres du processeur
     public byte A = 0x00,
             B,
             C,
@@ -178,18 +187,7 @@ public class CPU extends AbstractHardware
             //DEC B  1:4  Z 1 H -
             case 0x05:
                 label = "DEC B  1:4  Z 1 H -";
-                B--;
-                if (B == 0)
-                {
-                    setF(F_Z, 1);
-                }
-                else
-                {
-                    setF(F_Z, 0);
-                }
-                setF(F_N, 1);
-                setF(F_H, 1); // ?
-                PC++;
+                this.DEC(Register.B);
                 break;
 
             //LD B,d8  2:8  - - - -
@@ -222,11 +220,8 @@ public class CPU extends AbstractHardware
             //DEC BC  1:8  - - - -
             case 0x0B:
                 label = "DEC BC  1:8  - - - -";
-                int BC = ByteUtil.combine(C, B);
-                BC--;
-                B = (byte) (BC & 0x00FF);
-                C = (byte) (BC & 0xFF00);
-                PC++;
+                this.DEC(Register.BC);
+
                 break;
 
             //INC C  1:4  Z 0 H -
@@ -237,6 +232,7 @@ public class CPU extends AbstractHardware
             //DEC C  1:4  Z 1 H -
             case 0x0D:
                 label = "DEC C  1:4  Z 1 H -";
+                this.DEC(Register.C);
                 break;
 
             //LD C,d8  2:8  - - - -
@@ -279,6 +275,7 @@ public class CPU extends AbstractHardware
             //DEC D  1:4  Z 1 H -
             case 0x15:
                 label = "DEC D  1:4  Z 1 H -";
+                this.DEC(Register.D);
                 break;
 
             //LD D,d8  2:8  - - - -
@@ -310,6 +307,7 @@ public class CPU extends AbstractHardware
             //DEC DE  1:8  - - - -
             case 0x1B:
                 label = "DEC DE  1:8  - - - -";
+                this.DEC(Register.DE);
                 break;
 
             //INC E  1:4  Z 0 H -
@@ -320,6 +318,7 @@ public class CPU extends AbstractHardware
             //DEC E  1:4  Z 1 H -
             case 0x1D:
                 label = "DEC E  1:4  Z 1 H -";
+                this.DEC(Register.E);
                 break;
 
             //LD E,d8  2:8  - - - -
@@ -337,12 +336,9 @@ public class CPU extends AbstractHardware
                 label = "JR NZ,r8  2:12/8  - - - -";
                 if (getF(F_Z) == 0)
                 {
-                    PC += (short) (memory[PC + 1]);
+                    PC += (memory[PC + 1]);
                 }
-                else
-                {
-                    PC += 2;
-                }
+                PC += 2;
                 break;
 
             //LD HL,d16  3:12  - - - -
@@ -377,6 +373,7 @@ public class CPU extends AbstractHardware
             //DEC H  1:4  Z 1 H -
             case 0x25:
                 label = "DEC H  1:4  Z 1 H -";
+                this.DEC(Register.H);
                 break;
 
             //LD H,d8  2:8  - - - -
@@ -415,6 +412,7 @@ public class CPU extends AbstractHardware
             //DEC HL  1:8  - - - -
             case 0x2B:
                 label = "DEC HL  1:8  - - - -";
+                this.DEC(Register.HL);
                 break;
 
             //INC L  1:4  Z 0 H -
@@ -425,6 +423,7 @@ public class CPU extends AbstractHardware
             //DEC L  1:4  Z 1 H -
             case 0x2D:
                 label = "DEC L  1:4  Z 1 H -";
+                this.DEC(Register.L);
                 break;
 
             //LD L,d8  2:8  - - - -
@@ -505,6 +504,7 @@ public class CPU extends AbstractHardware
             //DEC SP  1:8  - - - -
             case 0x3B:
                 label = "DEC SP  1:8  - - - -";
+                this.DEC(Register.SP);
                 break;
 
             //INC A  1:4  Z 0 H -
@@ -515,6 +515,7 @@ public class CPU extends AbstractHardware
             //DEC A  1:4  Z 1 H -
             case 0x3D:
                 label = "DEC A  1:4  Z 1 H -";
+                this.DEC(Register.H);
                 break;
 
             //LD A,d8  2:8  - - - -
@@ -1278,6 +1279,10 @@ public class CPU extends AbstractHardware
                     PC += 2;
                 }
                 break;
+            
+            case 0xCB:
+                this.processCBOpCode();
+                break;
 
             //CALL a16  3:24  - - - -
             case 0xCD:
@@ -1531,6 +1536,15 @@ public class CPU extends AbstractHardware
     }
 
     /**
+     * traitement des opcodes préfixés par CB
+     */
+    private void processCBOpCode()
+    {
+        throw new UnsupportedOperationException("Not yet implemented");
+    }
+    
+    
+    /**
      * met la valeure du flag a 1 ou 0
      * 
      * @param flag
@@ -1569,5 +1583,79 @@ public class CPU extends AbstractHardware
             return 1;
         }
         return 0;
+    }
+
+    /**
+     * DEC n
+     * @param register 
+     */
+    private void DEC(Register register)
+    {
+        int result = -1;
+        switch (register)
+        {
+            case A:
+                break;
+            case B:
+                B--;
+                result = B;
+                break;
+            case C:
+                C--;
+                result = C;
+                break;
+            case D:
+                D--;
+                result = C;
+                break;
+            case E:
+                E--;
+                result = E;
+                break;
+            case F:
+                F--;
+                result = F;
+                break;
+            case H:
+                H--;
+                result = F;
+                break;
+            case L:
+                L--;
+                result = L;
+                break;
+            case BC:
+                int BC = ByteUtil.combine(C, B);
+                BC--;
+                B = (byte) (BC & 0x00FF);
+                C = (byte) (BC & 0xFF00);
+                break;
+            case DE:
+                int DE = ByteUtil.combine(E, D);
+                DE--;
+                B = (byte) (DE & 0x00FF);
+                C = (byte) (DE & 0xFF00);
+                break;
+            case SP:
+                SP--;
+                result = SP;
+                break;
+            case HL:
+                throw new UnsupportedOperationException("DEC HL");
+        }
+
+        if (result == 0)
+        {
+            setF(F_Z, 1);
+        }
+        else
+        {
+            setF(F_Z, 0);
+        }
+        
+        setF(F_N, 1);
+        setF(F_H, 1); // ?
+        
+        PC++;
     }
 }

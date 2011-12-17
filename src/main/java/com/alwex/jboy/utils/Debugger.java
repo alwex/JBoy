@@ -30,7 +30,7 @@ public class Debugger
 
             //LD BC,d16  3:12  - - - -
             case 0x01:
-                label += "LD BC,d16  3:12  - - - -";
+                label += "LD BC,"+Debug.toHex((short)ByteUtil.combine(theMemory[PC+2], theMemory[PC+1]))+"  3:12  - - - -";
                 PC += 3;
                 break;
 
@@ -126,7 +126,7 @@ public class Debugger
 
             //LD DE,d16  3:12  - - - -
             case 0x11:
-                label += "LD DE,d16  3:12  - - - -";
+                label += "LD DE,"+Debug.toHex((short)ByteUtil.combine(theMemory[PC+2], theMemory[PC+1]))+"  3:12  - - - -";
                 PC += 3;
                 break;
 
@@ -222,7 +222,7 @@ public class Debugger
 
             //LD HL,d16  3:12  - - - -
             case 0x21:
-                label += "LD HL,d16  3:12  - - - -";
+                label += "LD HL,"+Debug.toHex((short)ByteUtil.combine(theMemory[PC+2], theMemory[PC+1]))+"  3:12  - - - -";
                 PC += 3;
                 break;
 
@@ -318,7 +318,7 @@ public class Debugger
 
             //LD SP,d16  3:12  - - - -
             case 0x31:
-                label += "LD SP,d16  3:12  - - - -";
+                label += "LD SP,"+Debug.toHex((short)ByteUtil.combine(theMemory[PC+2], theMemory[PC+1]))+"  3:12  - - - -";
                 PC += 3;
                 break;
 
