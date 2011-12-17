@@ -1252,6 +1252,8 @@ public class CPU extends AbstractHardware
 
             //PREFIX CB  1:4  - - - -
             case 0xCB:
+                this.processCBOpCode();
+                // FIXME
                 label = "PREFIX CB  1:4  - - - -";
                 PC++;
                 switch (memory[PC] & 0xFF)
@@ -1280,10 +1282,6 @@ public class CPU extends AbstractHardware
                 }
                 break;
             
-            case 0xCB:
-                this.processCBOpCode();
-                break;
-
             //CALL a16  3:24  - - - -
             case 0xCD:
                 label = "CALL a16  3:24  - - - -";
@@ -1633,8 +1631,8 @@ public class CPU extends AbstractHardware
             case DE:
                 int DE = ByteUtil.combine(E, D);
                 DE--;
-                B = (byte) (DE & 0x00FF);
-                C = (byte) (DE & 0xFF00);
+                D = (byte) (DE & 0x00FF);
+                E = (byte) (DE & 0xFF00);
                 break;
             case SP:
                 SP--;
