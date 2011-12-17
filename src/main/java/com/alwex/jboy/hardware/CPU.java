@@ -1,5 +1,6 @@
 package com.alwex.jboy.hardware;
 
+import com.alwex.jboy.utils.ByteUtil;
 import com.alwex.jboy.utils.Debug;
 import org.apache.log4j.Logger;
 
@@ -221,7 +222,7 @@ public class CPU extends AbstractHardware
             //DEC BC  1:8  - - - -
             case 0x0B:
                 label = "DEC BC  1:8  - - - -";
-                int BC = combine(C, B);
+                int BC = ByteUtil.combine(C, B);
                 BC--;
                 B = (byte) (BC & 0x00FF);
                 C = (byte) (BC & 0xFF00);
@@ -355,7 +356,7 @@ public class CPU extends AbstractHardware
             //LD (HL+),A  1:8  - - - -
             case 0x22:
                 label = "LD (HL+),A  1:8  - - - -";
-                addr = combine(H, L);
+                addr = ByteUtil.combine(H, L);
                 memory[addr] = A;
                 addr++;
                 H = (byte) (addr & 0xFF00);
@@ -453,7 +454,7 @@ public class CPU extends AbstractHardware
             //LD (HL-),A  1:8  - - - -
             case 0x32:
                 label = "LD (HL-),A  1:8  - - - -";
-                addr = combine(H, L);
+                addr = ByteUtil.combine(H, L);
                 memory[addr] = A;
                 addr--;
                 H = (byte) ((addr & 0xFF00) >> 8);
@@ -1210,7 +1211,7 @@ public class CPU extends AbstractHardware
             //JP a16  3:16  - - - -
             case 0xC3:
                 label = "JP a16  3:16  - - - -";
-                PC = (short) this.combine(memory[PC + 2], memory[PC + 1]);
+                PC = (short) ByteUtil.combine(memory[PC + 2], memory[PC + 1]);
                 break;
 
             //CALL NZ,a16  3:24/12  - - - -
@@ -1270,7 +1271,7 @@ public class CPU extends AbstractHardware
                 label = "CALL Z,a16  3:24/12  - - - -";
                 if (getF(F_Z) == 1)
                 {
-                    PC = (short) combine(memory[PC + 2], memory[PC + 1]);
+                    PC = (short) ByteUtil.combine(memory[PC + 2], memory[PC + 1]);
                 }
                 else
                 {
@@ -1427,7 +1428,7 @@ public class CPU extends AbstractHardware
             //LD (a16),A  3:16  - - - -
             case 0xEA:
                 label = "LD (a16),A  3:16  - - - -";
-                memory[this.combine(memory[PC + 2], memory[PC + 1])] = A;
+                memory[ByteUtil.combine(memory[PC + 2], memory[PC + 1])] = A;
                 PC += 3;
                 break;
 
@@ -1492,7 +1493,7 @@ public class CPU extends AbstractHardware
             //LD A,(a16)  3:16  - - - -
             case 0xFA:
                 label = "LD A,(a16)  3:16  - - - -";
-                A = memory[this.combine(memory[PC + 2], memory[PC + 1])];
+                A = memory[ByteUtil.combine(memory[PC + 2], memory[PC + 1])];
                 PC += 3;
                 break;
 
@@ -1527,21 +1528,6 @@ public class CPU extends AbstractHardware
             default:
                 logger.error("opcode inconnus " + Debug.toHex(opCode));
         }
-    }
-
-    /**
-     * combine 2 octets tels que
-     * 0x12 | 0x34 => 0x1234
-     *
-     * @param a
-     * @param b
-     * @return
-     */
-    public int combine(byte a, byte b)
-    {
-        int result = ((((a << 8) & 0xffff | b & 0xff) & 0x0000ffff) & 0xffff);
-        logger.debug(result);
-        return result;
     }
 
     /**

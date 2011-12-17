@@ -18,7 +18,7 @@ public class Debugger
 
     public String parse(int PC)
     {
-        String label = Debug.toHex((short) PC) + ": ";
+        String label = Debug.toHex((short) PC) + ": " + Debug.toHex(theMemory[PC]) + " => ";
 
         switch (theMemory[PC] & 0xff)
         {
@@ -60,7 +60,7 @@ public class Debugger
 
             //LD B,d8  2:8  - - - -
             case 0x06:
-                label += "LD B,d8  2:8  - - - -";
+                label += "LD B," + Debug.toHex(theMemory[PC + 1]) + "  2:8  - - - -";
                 PC += 2;
                 break;
 
@@ -72,7 +72,7 @@ public class Debugger
 
             //LD (a16),SP  3:20  - - - -
             case 0x08:
-                label += "LD (a16),SP  3:20  - - - -";
+                label += "LD (" + Debug.toHex((short) ByteUtil.combine(theMemory[PC + 2], theMemory[PC + 1])) + "),SP  3:20  - - - -";
                 PC += 3;
                 break;
 
@@ -108,7 +108,7 @@ public class Debugger
 
             //LD C,d8  2:8  - - - -
             case 0x0E:
-                label += "LD C,d8  2:8  - - - -";
+                label += "LD C," + Debug.toHex(theMemory[PC + 1]) + "  2:8  - - - -";
                 PC += 2;
                 break;
 
@@ -156,7 +156,7 @@ public class Debugger
 
             //LD D,d8  2:8  - - - -
             case 0x16:
-                label += "LD D,d8  2:8  - - - -";
+                label += "LD D," + Debug.toHex(theMemory[PC + 1]) + "  2:8  - - - -";
                 PC += 2;
                 break;
 
@@ -204,7 +204,7 @@ public class Debugger
 
             //LD E,d8  2:8  - - - -
             case 0x1E:
-                label += "LD E,d8  2:8  - - - -";
+                label += "LD E," + Debug.toHex(theMemory[PC + 1]) + "  2:8  - - - -";
                 PC += 2;
                 break;
 
@@ -252,7 +252,7 @@ public class Debugger
 
             //LD H,d8  2:8  - - - -
             case 0x26:
-                label += "LD H,d8  2:8  - - - -";
+                label += "LD H," + Debug.toHex(theMemory[PC + 1]) + "  2:8  - - - -";
                 PC += 2;
                 break;
 
@@ -300,7 +300,7 @@ public class Debugger
 
             //LD L,d8  2:8  - - - -
             case 0x2E:
-                label += "LD L,d8  2:8  - - - -";
+                label += "LD L," + Debug.toHex(theMemory[PC + 1]) + "  2:8  - - - -";
                 PC += 2;
                 break;
 
@@ -348,7 +348,7 @@ public class Debugger
 
             //LD (HL),d8  2:12  - - - -
             case 0x36:
-                label += "LD (HL),d8  2:12  - - - -";
+                label += "LD (HL)," + Debug.toHex(theMemory[PC + 1]) + "  2:12  - - - -";
                 PC += 2;
                 break;
 
@@ -396,7 +396,7 @@ public class Debugger
 
             //LD A,d8  2:8  - - - -
             case 0x3E:
-                label += "LD A,d8  2:8  - - - -";
+                label += "LD A," + Debug.toHex(theMemory[PC + 1]) + "  2:8  - - - -";
                 PC += 2;
                 break;
 
@@ -1188,19 +1188,19 @@ public class Debugger
 
             //JP NZ,a16  3:16/12  - - - -
             case 0xC2:
-                label += "JP NZ,a16  3:16/12  - - - -";
+                label += "JP NZ," + Debug.toHex((short) ByteUtil.combine(theMemory[PC + 2], theMemory[PC + 1])) + "  3:16/12  - - - -";
                 PC += 3;
                 break;
 
             //JP a16  3:16  - - - -
             case 0xC3:
-                label += "JP a16  3:16  - - - -";
+                label += "JP " + Debug.toHex((short) ByteUtil.combine(theMemory[PC + 2], theMemory[PC + 1])) + "  3:16  - - - -";
                 PC += 3;
                 break;
 
             //CALL NZ,a16  3:24/12  - - - -
             case 0xC4:
-                label += "CALL NZ,a16  3:24/12  - - - -";
+                label += "CALL NZ," + Debug.toHex((short) ByteUtil.combine(theMemory[PC + 2], theMemory[PC + 1])) + "  3:24/12  - - - -";
                 PC += 3;
                 break;
 
@@ -1212,7 +1212,7 @@ public class Debugger
 
             //ADD A,d8  2:8  Z 0 H C
             case 0xC6:
-                label += "ADD A,d8  2:8  Z 0 H C";
+                label += "ADD A," + Debug.toHex(theMemory[PC + 1]) + "  2:8  Z 0 H C";
                 PC += 2;
                 break;
 
@@ -1236,7 +1236,7 @@ public class Debugger
 
             //JP Z,a16  3:16/12  - - - -
             case 0xCA:
-                label += "JP Z,a16  3:16/12  - - - -";
+                label += "JP Z," + Debug.toHex((short) ByteUtil.combine(theMemory[PC + 2], theMemory[PC + 1])) + "  3:16/12  - - - -";
                 PC += 3;
                 break;
 
@@ -1248,19 +1248,19 @@ public class Debugger
 
             //CALL Z,a16  3:24/12  - - - -
             case 0xCC:
-                label += "CALL Z,a16  3:24/12  - - - -";
+                label += "CALL Z," + Debug.toHex((short) ByteUtil.combine(theMemory[PC + 2], theMemory[PC + 1])) + "  3:24/12  - - - -";
                 PC += 3;
                 break;
 
             //CALL a16  3:24  - - - -
             case 0xCD:
-                label += "CALL a16  3:24  - - - -";
+                label += "CALL " + Debug.toHex((short) ByteUtil.combine(theMemory[PC + 2], theMemory[PC + 1])) + "  3:24  - - - -";
                 PC += 3;
                 break;
 
             //ADC A,d8  2:8  Z 0 H C
             case 0xCE:
-                label += "ADC A,d8  2:8  Z 0 H C";
+                label += "ADC A," + Debug.toHex(theMemory[PC + 1]) + "  2:8  Z 0 H C";
                 PC += 2;
                 break;
 
@@ -1284,13 +1284,13 @@ public class Debugger
 
             //JP NC,a16  3:16/12  - - - -
             case 0xD2:
-                label += "JP NC,a16  3:16/12  - - - -";
+                label += "JP NC," + Debug.toHex((short) ByteUtil.combine(theMemory[PC + 2], theMemory[PC + 1])) + "  3:16/12  - - - -";
                 PC += 3;
                 break;
 
             //CALL NC,a16  3:24/12  - - - -
             case 0xD4:
-                label += "CALL NC,a16  3:24/12  - - - -";
+                label += "CALL NC," + Debug.toHex((short) ByteUtil.combine(theMemory[PC + 2], theMemory[PC + 1])) + "  3:24/12  - - - -";
                 PC += 3;
                 break;
 
@@ -1302,7 +1302,7 @@ public class Debugger
 
             //SUB d8  2:8  Z 1 H C
             case 0xD6:
-                label += "SUB d8  2:8  Z 1 H C";
+                label += "SUB " + Debug.toHex(theMemory[PC + 1]) + "  2:8  Z 1 H C";
                 PC += 2;
                 break;
 
@@ -1326,19 +1326,19 @@ public class Debugger
 
             //JP C,a16  3:16/12  - - - -
             case 0xDA:
-                label += "JP C,a16  3:16/12  - - - -";
+                label += "JP C," + Debug.toHex((short) ByteUtil.combine(theMemory[PC + 2], theMemory[PC + 1])) + "  3:16/12  - - - -";
                 PC += 3;
                 break;
 
             //CALL C,a16  3:24/12  - - - -
             case 0xDC:
-                label += "CALL C,a16  3:24/12  - - - -";
+                label += "CALL C," + Debug.toHex((short) ByteUtil.combine(theMemory[PC + 2], theMemory[PC + 1])) + "  3:24/12  - - - -";
                 PC += 3;
                 break;
 
             //SBC A,d8  2:8  Z 1 H C
             case 0xDE:
-                label += "SBC A,d8  2:8  Z 1 H C";
+                label += "SBC A," + Debug.toHex(theMemory[PC + 1]) + "  2:8  Z 1 H C";
                 PC += 2;
                 break;
 
@@ -1374,7 +1374,7 @@ public class Debugger
 
             //AND d8  2:8  Z 0 1 0
             case 0xE6:
-                label += "AND d8  2:8  Z 0 1 0";
+                label += "AND " + Debug.toHex(theMemory[PC + 1]) + "  2:8  Z 0 1 0";
                 PC += 2;
                 break;
 
@@ -1398,13 +1398,13 @@ public class Debugger
 
             //LD (a16),A  3:16  - - - -
             case 0xEA:
-                label += "LD (a16),A  3:16  - - - -";
+                label += "LD (" + Debug.toHex((short) ByteUtil.combine(theMemory[PC + 2], theMemory[PC + 1])) + "),A  3:16  - - - -";
                 PC += 3;
                 break;
 
             //XOR d8  2:8  Z 0 0 0
             case 0xEE:
-                label += "XOR d8  2:8  Z 0 0 0";
+                label += "XOR " + Debug.toHex(theMemory[PC + 1]) + "  2:8  Z 0 0 0";
                 PC += 2;
                 break;
 
@@ -1446,7 +1446,7 @@ public class Debugger
 
             //OR d8  2:8  Z 0 0 0
             case 0xF6:
-                label += "OR d8  2:8  Z 0 0 0";
+                label += "OR " + Debug.toHex(theMemory[PC + 1]) + "  2:8  Z 0 0 0";
                 PC += 2;
                 break;
 
@@ -1470,7 +1470,7 @@ public class Debugger
 
             //LD A,(a16)  3:16  - - - -
             case 0xFA:
-                label += "LD A,(a16)  3:16  - - - -";
+                label += "LD A,(" + Debug.toHex((short) ByteUtil.combine(theMemory[PC + 2], theMemory[PC + 1])) + ")  3:16  - - - -";
                 PC += 3;
                 break;
 
@@ -1482,7 +1482,7 @@ public class Debugger
 
             //CP d8  2:8  Z 1 H C
             case 0xFE:
-                label += "CP d8  2:8  Z 1 H C";
+                label += "CP " + Debug.toHex(theMemory[PC + 1]) + "  2:8  Z 1 H C";
                 PC += 2;
                 break;
 

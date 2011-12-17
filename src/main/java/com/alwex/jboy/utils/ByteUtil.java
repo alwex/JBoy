@@ -45,4 +45,18 @@ public class ByteUtil
         }
         return out;
     }
+    
+    /**
+     * combine 2 octets tels que
+     * 0x12 | 0x34 => 0x1234
+     *
+     * @param a
+     * @param b
+     * @return
+     */
+    public static int combine(byte a, byte b)
+    {
+        int result = ((((a << 8) & 0xffff | b & 0xff) & 0x0000ffff) & 0xffff);
+        return result;
+    }
 }

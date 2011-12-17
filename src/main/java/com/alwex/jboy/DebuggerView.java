@@ -143,12 +143,13 @@ public class DebuggerView extends javax.swing.JFrame
 
         jScrollPane1.setName("jScrollPane1"); // NOI18N
 
+        org.jdesktop.application.ResourceMap resourceMap = org.jdesktop.application.Application.getInstance().getContext().getResourceMap(DebuggerView.class);
+        opCodeList.setFont(resourceMap.getFont("opcCodeList.font")); // NOI18N
         opCodeList.setName("opcCodeList"); // NOI18N
         jScrollPane1.setViewportView(opCodeList);
 
         jScrollPane2.setName("jScrollPane2"); // NOI18N
 
-        org.jdesktop.application.ResourceMap resourceMap = org.jdesktop.application.Application.getInstance().getContext().getResourceMap(DebuggerView.class);
         memoryList.setFont(resourceMap.getFont("memoryList.font")); // NOI18N
         memoryList.setName("memoryList"); // NOI18N
         jScrollPane2.setViewportView(memoryList);

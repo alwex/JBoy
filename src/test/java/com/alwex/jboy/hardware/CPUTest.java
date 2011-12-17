@@ -1,5 +1,6 @@
 package com.alwex.jboy.hardware;
 
+import com.alwex.jboy.utils.ByteUtil;
 import com.alwex.jboy.utils.Debug;
 import com.alwex.jboy.utils.Debugger;
 import org.junit.AfterClass;
@@ -225,27 +226,27 @@ public class CPUTest
         a = 0x00;
         b = 0x00;
 
-        assertEquals(0x0000, theCpu.combine(a, b));
+        assertEquals(0x0000, ByteUtil.combine(a, b));
 
         a = 0x00;
         b = (byte) 0xFF;
 
-        assertEquals(0x00FF, theCpu.combine(a, b));
+        assertEquals(0x00FF, ByteUtil.combine(a, b));
 
         a = (byte) 0xFF;
         b = (byte) 0xFF;
 
-        assertEquals(0xFFFF, theCpu.combine(a, b));
+        assertEquals(0xFFFF, ByteUtil.combine(a, b));
 
         a = (byte) 0xAB;
         b = (byte) 0xCD;
 
-        assertEquals(0xABCD, theCpu.combine(a, b));
+        assertEquals(0xABCD, ByteUtil.combine(a, b));
 
         a = (byte) 0xFD;
         b = (byte) 0x05;
 
-        assertEquals(0xFD05, theCpu.combine(a, b));
+        assertEquals(0xFD05, ByteUtil.combine(a, b));
 
     }
 }
