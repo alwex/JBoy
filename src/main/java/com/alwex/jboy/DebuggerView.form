@@ -25,18 +25,18 @@
       <Group type="103" groupAlignment="0" attributes="0">
           <Group type="102" alignment="0" attributes="0">
               <EmptySpace max="-2" attributes="0"/>
-              <Group type="103" groupAlignment="1" attributes="0">
-                  <Component id="RegistersPanel" pref="269" max="32767" attributes="1"/>
-                  <Component id="jScrollPane1" min="-2" max="-2" attributes="1"/>
+              <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                  <Component id="jScrollPane1" min="-2" pref="312" max="-2" attributes="1"/>
+                  <Component id="RegistersPanel" max="32767" attributes="1"/>
               </Group>
-              <EmptySpace max="-2" attributes="0"/>
-              <Component id="jScrollPane2" min="-2" pref="496" max="-2" attributes="0"/>
+              <EmptySpace min="-2" pref="12" max="-2" attributes="0"/>
+              <Component id="jScrollPane2" min="-2" pref="440" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" attributes="0">
-                  <Component id="runButton" alignment="1" pref="74" max="32767" attributes="2"/>
-                  <Component id="stepButton" alignment="1" pref="74" max="32767" attributes="2"/>
-                  <Component id="resetButton" alignment="1" pref="74" max="32767" attributes="2"/>
-                  <Component id="pauseButton" pref="74" max="32767" attributes="2"/>
+                  <Component id="runButton" alignment="1" pref="85" max="32767" attributes="2"/>
+                  <Component id="stepButton" alignment="1" pref="85" max="32767" attributes="2"/>
+                  <Component id="resetButton" alignment="1" pref="85" max="32767" attributes="2"/>
+                  <Component id="pauseButton" pref="85" max="32767" attributes="2"/>
               </Group>
               <EmptySpace min="-2" max="-2" attributes="0"/>
           </Group>
@@ -44,9 +44,9 @@
     </DimensionLayout>
     <DimensionLayout dim="1">
       <Group type="103" groupAlignment="0" attributes="0">
-          <Group type="102" alignment="0" attributes="0">
+          <Group type="102" alignment="1" attributes="0">
               <EmptySpace min="-2" max="-2" attributes="0"/>
-              <Group type="103" groupAlignment="0" attributes="0">
+              <Group type="103" groupAlignment="1" attributes="0">
                   <Component id="jScrollPane2" alignment="0" pref="403" max="32767" attributes="3"/>
                   <Group type="102" alignment="0" attributes="0">
                       <Component id="runButton" min="-2" max="-2" attributes="0"/>

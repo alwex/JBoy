@@ -8,6 +8,7 @@ package com.alwex.jboy;
 import com.alwex.jboy.hardware.CPU;
 import com.alwex.jboy.hardware.MEM;
 import com.alwex.jboy.utils.ByteUtil;
+import com.alwex.jboy.utils.Debugger;
 import com.alwex.jboy.utils.UnsignedByte;
 import javax.swing.DefaultListModel;
 
@@ -19,6 +20,7 @@ public class DebuggerView extends javax.swing.JFrame
 {
 
     private CPU theCpu;
+    private Debugger theDebugger;
 
     /** Creates new form DebuggerView */
     public DebuggerView()
@@ -42,22 +44,31 @@ public class DebuggerView extends javax.swing.JFrame
 
     public void loadValues()
     {
-        DefaultListModel model = new DefaultListModel();
-        memoryList.setModel(model);
+        theDebugger = new Debugger(theCpu.memory);
+        
+        DefaultListModel memoryModel = new DefaultListModel();
+        memoryList.setModel(memoryModel);
+        
+        DefaultListModel opCodeModel = new DefaultListModel();
+        opCodeList.setModel(opCodeModel);
 
         int i = 1;
         short adress = 0;
         String aLine = "";
         for (byte b : theCpu.memory)
         {
+            // afficahge mémoire
             aLine += " " + new UnsignedByte(b).toString();
             if (i % 16 == 0)
             {
                 aLine = ByteUtil.toHex(adress) + ":" + aLine;
-                model.addElement(aLine);
+                memoryModel.addElement(aLine);
                 adress += 16;
                 aLine = "";
             }
+            
+            // affichage instructions
+            opCodeModel.addElement(theDebugger.parse(i - 1));
             i++;
         }
 
@@ -80,6 +91,9 @@ public class DebuggerView extends javax.swing.JFrame
         FNTextfield.setText(String.valueOf(theCpu.getF(theCpu.F_N)));
         FHTextfield.setText(String.valueOf(theCpu.getF(theCpu.F_H)));
         FCTextfield.setText(String.valueOf(theCpu.getF(theCpu.F_C)));
+        
+        opCodeList.setSelectedIndex(theCpu.PC);
+        opCodeList.ensureIndexIsVisible(theCpu.PC);
     }
 
     /** This method is called from within the constructor to
@@ -356,26 +370,26 @@ public class DebuggerView extends javax.swing.JFrame
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(RegistersPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 269, Short.MAX_VALUE)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 496, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 312, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(RegistersPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(12, 12, 12)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 440, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(runButton, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 74, Short.MAX_VALUE)
-                    .addComponent(stepButton, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 74, Short.MAX_VALUE)
-                    .addComponent(resetButton, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 74, Short.MAX_VALUE)
-                    .addComponent(pauseButton, javax.swing.GroupLayout.DEFAULT_SIZE, 74, Short.MAX_VALUE))
+                    .addComponent(runButton, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 85, Short.MAX_VALUE)
+                    .addComponent(stepButton, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 85, Short.MAX_VALUE)
+                    .addComponent(resetButton, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 85, Short.MAX_VALUE)
+                    .addComponent(pauseButton, javax.swing.GroupLayout.DEFAULT_SIZE, 85, Short.MAX_VALUE))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 403, Short.MAX_VALUE)
-                    .addGroup(layout.createSequentialGroup()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 403, Short.MAX_VALUE)
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
                         .addComponent(runButton)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(stepButton)
@@ -383,7 +397,7 @@ public class DebuggerView extends javax.swing.JFrame
                         .addComponent(pauseButton)
                         .addGap(18, 18, 18)
                         .addComponent(resetButton))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                    .addGroup(layout.createSequentialGroup()
                         .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 263, Short.MAX_VALUE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(RegistersPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)))

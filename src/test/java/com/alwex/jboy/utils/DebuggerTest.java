@@ -40,6 +40,6 @@ public class DebuggerTest
 
         Debugger theDebugger = new Debugger(theCpu.memory);
 
-        theDebugger.parse();
+//        theDebugger.parse();
     }
 }
