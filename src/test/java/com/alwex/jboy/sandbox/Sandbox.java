@@ -18,6 +18,8 @@ import static org.junit.Assert.*;
 public class Sandbox
 {
 
+    private Integer a, b;
+    
     public Sandbox()
     {
     }
@@ -156,5 +158,23 @@ public class Sandbox
     public void testNegative()
     {
         System.out.println((byte) 0xfc);
+    }
+    
+    private void changeValues(Integer theA)
+    {
+        theA = 10;
+    }
+    
+    @Test
+    public void referenceTest()
+    {
+        a = 0;
+        b = 0;
+        
+        this.changeValues(a);
+        this.changeValues(b);
+        
+        System.out.println(a);
+        System.out.println(b);
     }
 }

@@ -20,7 +20,7 @@ public class CPU extends AbstractHardware
     public enum Register
     {
 
-        A, B, C, D, E, F, H, L, HL, BC, DE, SP, F_C, F_H, F_N, F_Z;
+        A, B, C, D, E, F, H, L, HL, BC, DE, SP, F_C, F_H, F_N, F_Z, n, nn;
     }
     protected static Logger logger;
     private static CPU instance;
@@ -448,6 +448,8 @@ public class CPU extends AbstractHardware
             //LD SP,d16  3:12  - - - -
             case 0x31:
                 label = "LD SP,d16  3:12  - - - -";
+                SP = (short) ByteUtil.combine(memory[PC + 2], memory[PC + 1]);
+                PC += 3;
                 break;
 
             //LD (HL-),A  1:8  - - - -
@@ -479,6 +481,8 @@ public class CPU extends AbstractHardware
             //LD (HL),d8  2:12  - - - -
             case 0x36:
                 label = "LD (HL),d8  2:12  - - - -";
+                memory[ByteUtil.combine(L, H)] = memory[PC + 1];
+                PC += 2;
                 break;
 
             //SCF  1:4  - 0 0 1
@@ -534,235 +538,323 @@ public class CPU extends AbstractHardware
             //LD B,B  1:4  - - - -
             case 0x40:
                 label = "LD B,B  1:4  - - - -";
-                // B = B;
+                B = B;
                 PC++;
                 break;
 
             //LD B,C  1:4  - - - -
             case 0x41:
                 label = "LD B,C  1:4  - - - -";
+                B = C;
+                PC++;
                 break;
 
             //LD B,D  1:4  - - - -
             case 0x42:
                 label = "LD B,D  1:4  - - - -";
+                B = D;
+                PC++;
                 break;
 
             //LD B,E  1:4  - - - -
             case 0x43:
                 label = "LD B,E  1:4  - - - -";
+                B = E;
+                PC++;
                 break;
 
             //LD B,H  1:4  - - - -
             case 0x44:
                 label = "LD B,H  1:4  - - - -";
+                B = H;
+                PC++;
                 break;
 
             //LD B,L  1:4  - - - -
             case 0x45:
                 label = "LD B,L  1:4  - - - -";
+                B = L;
+                PC++;
                 break;
 
             //LD B,(HL)  1:8  - - - -
             case 0x46:
                 label = "LD B,(HL)  1:8  - - - -";
+                B = memory[ByteUtil.combine(L, H)];
+                PC++;
                 break;
 
             //LD B,A  1:4  - - - -
             case 0x47:
                 label = "LD B,A  1:4  - - - -";
+                B = A;
+                PC++;
                 break;
 
             //LD C,B  1:4  - - - -
             case 0x48:
                 label = "LD C,B  1:4  - - - -";
+                C = B;
+                PC++;
                 break;
 
             //LD C,C  1:4  - - - -
             case 0x49:
                 label = "LD C,C  1:4  - - - -";
+                C = C;
+                PC++;
                 break;
 
             //LD C,D  1:4  - - - -
             case 0x4A:
                 label = "LD C,D  1:4  - - - -";
+                C = D;
+                PC++;
                 break;
 
             //LD C,E  1:4  - - - -
             case 0x4B:
                 label = "LD C,E  1:4  - - - -";
+                C = E;
+                PC++;
                 break;
 
             //LD C,H  1:4  - - - -
             case 0x4C:
                 label = "LD C,H  1:4  - - - -";
+                C = H;
+                PC++;
                 break;
 
             //LD C,L  1:4  - - - -
             case 0x4D:
                 label = "LD C,L  1:4  - - - -";
+                C = L;
+                PC++;
                 break;
 
             //LD C,(HL)  1:8  - - - -
             case 0x4E:
                 label = "LD C,(HL)  1:8  - - - -";
+                C = memory[ByteUtil.combine(L, H)];
+                PC++;
                 break;
 
             //LD C,A  1:4  - - - -  
             case 0x4F:
                 label = "LD C,A  1:4  - - - -  ";
+                C = A;
+                PC++;
                 break;
 
             //LD D,B  1:4  - - - -
             case 0x50:
                 label = "LD D,B  1:4  - - - -";
+                D = B;
+                PC++;
                 break;
 
             //LD D,C  1:4  - - - -
             case 0x51:
                 label = "LD D,C  1:4  - - - -";
+                D = C;
+                PC++;
                 break;
 
             //LD D,D  1:4  - - - -
             case 0x52:
                 label = "LD D,D  1:4  - - - -";
+                D = D;
+                PC++;
                 break;
 
             //LD D,E  1:4  - - - -
             case 0x53:
                 label = "LD D,E  1:4  - - - -";
+                D = E;
+                PC++;
                 break;
 
             //LD D,H  1:4  - - - -
             case 0x54:
                 label = "LD D,H  1:4  - - - -";
+                D = H;
+                PC++;
                 break;
 
             //LD D,L  1:4  - - - -
             case 0x55:
                 label = "LD D,L  1:4  - - - -";
+                D = L;
+                PC++;
                 break;
 
             //LD D,(HL)  1:8  - - - -
             case 0x56:
                 label = "LD D,(HL)  1:8  - - - -";
+                D = memory[ByteUtil.combine(L, H)];
+                PC++;
                 break;
 
             //LD D,A  1:4  - - - -
             case 0x57:
                 label = "LD D,A  1:4  - - - -";
+                D = A;
+                PC++;
                 break;
 
             //LD E,B  1:4  - - - -
             case 0x58:
                 label = "LD E,B  1:4  - - - -";
+                E = B;
+                PC++;
                 break;
 
             //LD E,C  1:4  - - - -
             case 0x59:
                 label = "LD E,C  1:4  - - - -";
+                E = C;
+                PC++;
                 break;
 
             //LD E,D  1:4  - - - -
             case 0x5A:
                 label = "LD E,D  1:4  - - - -";
+                E = D;
+                PC++;
                 break;
 
             //LD E,E  1:4  - - - -
             case 0x5B:
                 label = "LD E,E  1:4  - - - -";
+                E = E;
+                PC++;
                 break;
 
             //LD E,H  1:4  - - - -
             case 0x5C:
                 label = "LD E,H  1:4  - - - -";
+                E = H;
+                PC++;
                 break;
 
             //LD E,L  1:4  - - - -
             case 0x5D:
                 label = "LD E,L  1:4  - - - -";
+                E = L;
+                PC++;
                 break;
 
             //LD E,(HL)  1:8  - - - -
             case 0x5E:
                 label = "LD E,(HL)  1:8  - - - -";
+                E = memory[ByteUtil.combine(L, H)];
+                PC++;
                 break;
 
             //LD E,A  1:4  - - - -  
             case 0x5F:
                 label = "LD E,A  1:4  - - - -  ";
+                E = A;
+                PC++;
                 break;
 
             //LD H,B  1:4  - - - -
             case 0x60:
                 label = "LD H,B  1:4  - - - -";
+                H = B;
+                PC++;
                 break;
 
             //LD H,C  1:4  - - - -
             case 0x61:
                 label = "LD H,C  1:4  - - - -";
+                H = C;
+                PC++;
                 break;
 
             //LD H,D  1:4  - - - -
             case 0x62:
                 label = "LD H,D  1:4  - - - -";
+                H = D;
+                PC++;
                 break;
 
             //LD H,E  1:4  - - - -
             case 0x63:
                 label = "LD H,E  1:4  - - - -";
+                H = E;
+                PC++;
                 break;
 
             //LD H,H  1:4  - - - -
             case 0x64:
                 label = "LD H,H  1:4  - - - -";
+                H = H;
+                PC++;
                 break;
 
             //LD H,L  1:4  - - - -
             case 0x65:
                 label = "LD H,L  1:4  - - - -";
+                H = L;
+                PC++;
                 break;
 
             //LD H,(HL)  1:8  - - - -
             case 0x66:
                 label = "LD H,(HL)  1:8  - - - -";
-                H = (byte) (H & 0xFF00 | L & 0x00FF);
+                H = memory[ByteUtil.combine(L, H)];
                 PC++;
                 break;
 
             //LD H,A  1:4  - - - -
             case 0x67:
                 label = "LD H,A  1:4  - - - -";
+                H = A;
+                PC++;
                 break;
 
             //LD L,B  1:4  - - - -
             case 0x68:
                 label = "LD L,B  1:4  - - - -";
+                L = B;
+                PC++;
                 break;
 
             //LD L,C  1:4  - - - -
             case 0x69:
                 label = "LD L,C  1:4  - - - -";
+                L = C;
+                PC++;
                 break;
 
             //LD L,D  1:4  - - - -
             case 0x6A:
                 label = "LD L,D  1:4  - - - -";
+                L = D;
+                PC++;
                 break;
 
             //LD L,E  1:4  - - - -
             case 0x6B:
                 label = "LD L,E  1:4  - - - -";
+                L = E;
+                PC++;
                 break;
 
             //LD L,H  1:4  - - - -
             case 0x6C:
                 label = "LD L,H  1:4  - - - -";
+                L = H;
+                PC++;
                 break;
 
             //LD L,L  1:4  - - - -
             case 0x6D:
                 label = "LD L,L  1:4  - - - -";
+                L = L;
+                PC++;
                 break;
 
             //LD L,(HL)  1:8  - - - -
@@ -773,86 +865,111 @@ public class CPU extends AbstractHardware
             //LD L,A  1:4  - - - -  
             case 0x6F:
                 label = "LD L,A  1:4  - - - -  ";
+                L = A;
+                PC++;
                 break;
 
             //LD (HL),B  1:8  - - - -
             case 0x70:
                 label = "LD (HL),B  1:8  - - - -";
+                this.LD_HL(Register.B);
                 break;
 
             //LD (HL),C  1:8  - - - -
             case 0x71:
                 label = "LD (HL),C  1:8  - - - -";
+                this.LD_HL(Register.C);
                 break;
 
             //LD (HL),D  1:8  - - - -
             case 0x72:
                 label = "LD (HL),D  1:8  - - - -";
+                this.LD_HL(Register.D);
                 break;
 
             //LD (HL),E  1:8  - - - -
             case 0x73:
                 label = "LD (HL),E  1:8  - - - -";
+                this.LD_HL(Register.E);
                 break;
 
             //LD (HL),H  1:8  - - - -
             case 0x74:
                 label = "LD (HL),H  1:8  - - - -";
+                this.LD_HL(Register.H);
                 break;
 
             //LD (HL),L  1:8  - - - -
             case 0x75:
                 label = "LD (HL),L  1:8  - - - -";
+                this.LD_HL(Register.L);
                 break;
-
-            //HALT  1:4  - - - -
+                
             case 0x76:
+                //HALT  1:4  - - - -
                 label = "HALT  1:4  - - - -";
                 break;
 
             //LD (HL),A  1:8  - - - -
             case 0x77:
                 label = "LD (HL),A  1:8  - - - -";
+                this.LD_HL(Register.A);
                 break;
 
             //LD A,B  1:4  - - - -
             case 0x78:
                 label = "LD A,B  1:4  - - - -";
+                A = B;
+                PC++;
                 break;
 
             //LD A,C  1:4  - - - -
             case 0x79:
                 label = "LD A,C  1:4  - - - -";
+                A = C;
+                PC++;
                 break;
 
             //LD A,D  1:4  - - - -
             case 0x7A:
                 label = "LD A,D  1:4  - - - -";
+                A = D;
+                PC++;
                 break;
 
             //LD A,E  1:4  - - - -
             case 0x7B:
                 label = "LD A,E  1:4  - - - -";
+                A = E;
+                PC++;
                 break;
 
             //LD A,H  1:4  - - - -
             case 0x7C:
                 label = "LD A,H  1:4  - - - -";
+                A = H;
+                PC++;
                 break;
 
             //LD A,L  1:4  - - - -
             case 0x7D:
                 label = "LD A,L  1:4  - - - -";
+                A = L;
+                PC++;
                 break;
 
             //LD A,(HL)  1:8  - - - -
             case 0x7E:
                 label = "LD A,(HL)  1:8  - - - -";
+                A = memory[ByteUtil.combine(L, H)];
+                PC++;
                 break;
 
             //LD A,A  1:4  - - - -  
             case 0x7F:
                 label = "LD A,A  1:4  - - - -  ";
+                A = A;
+                PC++;
                 break;
 
             //ADD A,B  1:4  Z 0 H C
@@ -1281,7 +1398,7 @@ public class CPU extends AbstractHardware
                     PC += 2;
                 }
                 break;
-            
+
             //CALL a16  3:24  - - - -
             case 0xCD:
                 label = "CALL a16  3:24  - - - -";
@@ -1540,8 +1657,7 @@ public class CPU extends AbstractHardware
     {
         throw new UnsupportedOperationException("Not yet implemented");
     }
-    
-    
+
     /**
      * met la valeure du flag a 1 ou 0
      * 
@@ -1581,6 +1697,43 @@ public class CPU extends AbstractHardware
             return 1;
         }
         return 0;
+    }
+
+    private void LD_HL(Register register)
+    {
+        byte value = 0;
+        switch (register)
+        {
+            case A:
+                value = A;
+                break;
+            case B:
+                value = B;
+                break;
+            case C:
+                value = C;
+                break;
+            case D:
+                value = D;
+                break;
+            case E:
+                value = E;
+                break;
+            case F:
+                value = F;
+                break;
+            case H:
+                value = H;
+                break;
+            case L:
+                value = L;
+                break;
+            default:
+                System.out.println("erreur pas géré le ld");
+        }
+
+        memory[ByteUtil.combine(L, H)] = value;
+        PC++;
     }
 
     /**
@@ -1650,10 +1803,10 @@ public class CPU extends AbstractHardware
         {
             setF(F_Z, 0);
         }
-        
+
         setF(F_N, 1);
         setF(F_H, 1); // ?
-        
+
         PC++;
     }
 }
