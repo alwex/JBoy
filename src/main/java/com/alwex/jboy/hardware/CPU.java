@@ -904,7 +904,7 @@ public class CPU extends AbstractHardware
                 label = "LD (HL),L  1:8  - - - -";
                 this.LD_HL(Register.L);
                 break;
-                
+
             case 0x76:
                 //HALT  1:4  - - - -
                 label = "HALT  1:4  - - - -";
@@ -1743,6 +1743,7 @@ public class CPU extends AbstractHardware
     private void DEC(Register register)
     {
         int result = -1;
+        boolean halfCarry = false;
         switch (register)
         {
             case A:
@@ -1750,30 +1751,37 @@ public class CPU extends AbstractHardware
             case B:
                 B--;
                 result = B;
+                halfCarry = ((B & 0xf) == 0xf);
                 break;
             case C:
                 C--;
                 result = C;
+                halfCarry = ((C & 0xf) == 0xf);
                 break;
             case D:
                 D--;
-                result = C;
+                result = D;
+                halfCarry = ((D & 0xf) == 0xf);
                 break;
             case E:
                 E--;
                 result = E;
+                halfCarry = ((E & 0xf) == 0xf);
                 break;
             case F:
                 F--;
                 result = F;
+                halfCarry = ((F & 0xf) == 0xf);
                 break;
             case H:
                 H--;
-                result = F;
+                result = H;
+                halfCarry = ((H & 0xf) == 0xf);
                 break;
             case L:
                 L--;
                 result = L;
+                halfCarry = ((L & 0xf) == 0xf);
                 break;
             case BC:
                 int BC = ByteUtil.combine(C, B);
@@ -1806,9 +1814,14 @@ public class CPU extends AbstractHardware
             setF(F_Z, 0);
         }
 
+        // soustraction donc 1
         setF(F_N, 1);
-        // TODO half carry !!!!!
-        setF(F_H, 1); // ?
+
+        // half carry
+        if (halfCarry)
+        {
+            setF(F_H, 1);
+        }
 
         PC++;
     }
