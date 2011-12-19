@@ -15,7 +15,7 @@ public class CPU extends AbstractHardware
 {
 
     /**
-     * identifie les différents registres
+     * identifie les diffï¿½rents registres
      */
     public enum Register
     {
@@ -1651,7 +1651,7 @@ public class CPU extends AbstractHardware
     }
 
     /**
-     * traitement des opcodes préfixés par CB
+     * traitement des opcodes prï¿½fixï¿½s par CB
      */
     private void processCBOpCode()
     {
@@ -1729,7 +1729,7 @@ public class CPU extends AbstractHardware
                 value = L;
                 break;
             default:
-                System.out.println("erreur pas géré le ld");
+                System.out.println("erreur pas gï¿½rï¿½ le ld");
         }
 
         memory[ByteUtil.combine(L, H)] = value;
@@ -1778,12 +1778,14 @@ public class CPU extends AbstractHardware
             case BC:
                 int BC = ByteUtil.combine(C, B);
                 BC--;
+                result = BC;
                 B = (byte) (BC & 0x00FF);
                 C = (byte) (BC & 0xFF00);
                 break;
             case DE:
                 int DE = ByteUtil.combine(E, D);
                 DE--;
+                result = DE;
                 D = (byte) (DE & 0x00FF);
                 E = (byte) (DE & 0xFF00);
                 break;
@@ -1805,6 +1807,7 @@ public class CPU extends AbstractHardware
         }
 
         setF(F_N, 1);
+        // TODO half carry !!!!!
         setF(F_H, 1); // ?
 
         PC++;
