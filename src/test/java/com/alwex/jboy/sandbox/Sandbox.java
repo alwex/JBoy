@@ -18,8 +18,6 @@ import static org.junit.Assert.*;
 public class Sandbox
 {
 
-    private Integer a, b;
-    
     public Sandbox()
     {
     }
@@ -160,7 +158,7 @@ public class Sandbox
         System.out.println((byte) 0xfc);
     }
     
-    private void changeValues(Integer theA)
+    private void changeValues(Byte theA)
     {
         theA = 10;
     }
@@ -168,13 +166,24 @@ public class Sandbox
     @Test
     public void referenceTest()
     {
-        a = 0;
-        b = 0;
+        Byte a = new Byte("5");
+        Byte b = new Byte("0");
         
         this.changeValues(a);
         this.changeValues(b);
         
         System.out.println(a);
         System.out.println(b);
+    }
+
+    @Test
+    public void generateCodeForTest()
+    {
+        for (int i = 0; i <= 0xff; i++)
+        {
+            System.out.println("theCpu.PC = this.memoryLocationFor((byte) 0x" + Debug.toHex((byte)i) + ");");
+            System.out.println("assertEquals(0x" + Debug.toHex((byte)i) + ", theCpu.memory[theCpu.PC & 0xffff]);");
+            System.out.println("");
+        }
     }
 }

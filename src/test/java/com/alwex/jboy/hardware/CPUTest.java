@@ -225,7 +225,7 @@ public class CPUTest
 
         a = 0x00;
         b = 0x00;
-
+        
         assertEquals(0x0000, ByteUtil.combine(a, b));
 
         a = 0x00;
@@ -247,6 +247,5 @@ public class CPUTest
         b = (byte) 0x05;
 
         assertEquals(0xFD05, ByteUtil.combine(a, b));
-
     }
 }
