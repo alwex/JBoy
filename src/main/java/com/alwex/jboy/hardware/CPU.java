@@ -167,16 +167,22 @@ public class CPU extends AbstractHardware
             // LD BC,d16  3:12  - - - -
             case 0x01:
                 label = "LD BC,d16  3:12  - - - -";
+                B = memory[PC + 2];
+                C = memory[PC + 1];
+                PC += 3;
                 break;
 
             //LD (BC),A  1:8  - - - -
             case 0x02:
                 label = "LD (BC),A  1:8  - - - -";
+                memory[ByteUtil.combine(B, C)] = A;
+                PC += 1;
                 break;
 
             //INC BC  1:8  - - - -
             case 0x03:
                 label = "INC BC  1:8  - - - -";
+                
                 break;
 
             //INC B  1:4  Z 0 H -
@@ -221,7 +227,6 @@ public class CPU extends AbstractHardware
             case 0x0B:
                 label = "DEC BC  1:8  - - - -";
                 this.DEC(Register.BC);
-
                 break;
 
             //INC C  1:4  Z 0 H -
@@ -355,7 +360,7 @@ public class CPU extends AbstractHardware
                 addr = ByteUtil.combine(H, L);
                 memory[addr] = A;
                 addr++;
-                H = (byte) (addr & 0xFF00);
+                H = (byte) (addr >> 8 & 0xFF00);
                 L = (byte) (addr & 0x00FF);
                 PC++;
                 break;
@@ -1729,7 +1734,7 @@ public class CPU extends AbstractHardware
                 value = L;
                 break;
             default:
-                System.out.println("erreur pas g�r� le ld");
+                System.out.println("erreur pas géré le ld");
         }
 
         memory[ByteUtil.combine(L, H)] = value;
@@ -1784,18 +1789,18 @@ public class CPU extends AbstractHardware
                 halfCarry = ((L & 0xf) == 0xf);
                 break;
             case BC:
-                int BC = ByteUtil.combine(C, B);
+                int BC = ByteUtil.combine(B, C);
                 BC--;
                 result = BC;
-                B = (byte) (BC & 0x00FF);
-                C = (byte) (BC & 0xFF00);
+                B = (byte) (BC >> 8 & 0xFF);
+                C = (byte) (BC & 0x00FF);
                 break;
             case DE:
-                int DE = ByteUtil.combine(E, D);
+                int DE = ByteUtil.combine(D, E);
                 DE--;
                 result = DE;
-                D = (byte) (DE & 0x00FF);
-                E = (byte) (DE & 0xFF00);
+                D = (byte) (DE >> 8 & 0xFF00);
+                E = (byte) (DE & 0x00FF);
                 break;
             case SP:
                 SP--;
