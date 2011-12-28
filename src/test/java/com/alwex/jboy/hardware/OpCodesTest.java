@@ -1,14 +1,7 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.alwex.jboy.hardware;
 
 import com.alwex.jboy.utils.ByteUtil;
-import com.alwex.jboy.utils.Debug;
-import org.junit.AfterClass;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -96,10 +89,32 @@ public class OpCodesTest
     {
         // DEC B  1:4  Z 1 H -
         theCpu.memory[0x0100] = (byte) 0x05;
-        theCpu.B = 0x10;
+
+        // > 0
+        theCpu.B = 0x02;
         theCpu.processOpCode();
-        assertEquals(0x09, theCpu.B);
+        assertEquals(0x01, theCpu.B);
+        assertEquals(1, theCpu.getF(theCpu.F_N));
+        assertEquals(0, theCpu.getF(theCpu.F_Z));
         assertEquals(0x0101, theCpu.PC);
+
+        // == 0
+        theCpu.init();
+        theCpu.B = 0x01;
+        theCpu.processOpCode();
+        assertEquals(0x00, theCpu.B);
+        assertEquals(0x0101, theCpu.PC);
+        assertEquals(1, theCpu.getF(theCpu.F_N));
+        assertEquals(1, theCpu.getF(theCpu.F_Z));
+
+        // < 0
+        theCpu.init();
+        theCpu.B = 0x00;
+        theCpu.processOpCode();
+        assertEquals((byte) 0xFF, theCpu.B);
+        assertEquals(0x0101, theCpu.PC);
+        assertEquals(1, theCpu.getF(theCpu.F_N));
+        assertEquals(0, theCpu.getF(theCpu.F_Z));
     }
 
     @Test
@@ -142,6 +157,14 @@ public class OpCodesTest
     {
         // ADD HL,BC  1:8  - 0 H C
         theCpu.memory[0x0100] = (byte) 0x09;
+        theCpu.H = 0x10;
+        theCpu.L = 0x01;
+        theCpu.B = 0x20;
+        theCpu.C = 0x02;
+
+        assertEquals(0x3003, ByteUtil.combine(theCpu.H, theCpu.L));
+        assertEquals(1, theCpu.getF(theCpu.F_N));
+        assertEquals(0x0101, theCpu.PC);
         assertTrue(false);
     }
 
@@ -150,7 +173,13 @@ public class OpCodesTest
     {
         // LD A,(BC)  1:8  - - - -
         theCpu.memory[0x0100] = (byte) 0x0A;
-        assertTrue(false);
+        theCpu.memory[0x0105] = 0x3E;
+        theCpu.B = 0x01;
+        theCpu.C = 0x05;
+        theCpu.processOpCode();
+
+        assertEquals(0x3E, theCpu.A);
+        assertEquals(0x0101, theCpu.PC);
     }
 
     @Test
@@ -171,8 +200,28 @@ public class OpCodesTest
     public void test_0x0C_INC()
     {
         // INC C  1:4  Z 0 H -
+        // > 0
         theCpu.memory[0x0100] = (byte) 0x0C;
-        assertTrue(false);
+        theCpu.C = 0x00;
+        theCpu.processOpCode();
+
+        assertEquals(0x01, theCpu.C);
+        assertEquals(0x0101, theCpu.PC);
+        assertEquals(0, theCpu.getF(theCpu.F_Z));
+        assertEquals(0, theCpu.getF(theCpu.F_N));
+        assertEquals(0x0101, theCpu.PC);
+
+        // == 0
+        theCpu.init();
+        theCpu.memory[0x0100] = (byte) 0x0C;
+        theCpu.C = (byte) 0xFF;
+        theCpu.processOpCode();
+
+        assertEquals(0x00, theCpu.C);
+        assertEquals(0x0101, theCpu.PC);
+        assertEquals(1, theCpu.getF(theCpu.F_Z));
+        assertEquals(0, theCpu.getF(theCpu.F_N));
+        assertEquals(0x0101, theCpu.PC);
     }
 
     @Test
@@ -180,7 +229,32 @@ public class OpCodesTest
     {
         // DEC C  1:4  Z 1 H -
         theCpu.memory[0x0100] = (byte) 0x0D;
-        assertTrue(false);
+
+        // > 0
+        theCpu.C = 0x02;
+        theCpu.processOpCode();
+        assertEquals(0x01, theCpu.C);
+        assertEquals(1, theCpu.getF(theCpu.F_N));
+        assertEquals(0, theCpu.getF(theCpu.F_Z));
+        assertEquals(0x0101, theCpu.PC);
+
+        // == 0
+        theCpu.init();
+        theCpu.C = 0x01;
+        theCpu.processOpCode();
+        assertEquals(0x00, theCpu.C);
+        assertEquals(1, theCpu.getF(theCpu.F_N));
+        assertEquals(1, theCpu.getF(theCpu.F_Z));
+        assertEquals(0x0101, theCpu.PC);
+
+        // < 0
+        theCpu.init();
+        theCpu.C = 0x00;
+        theCpu.processOpCode();
+        assertEquals((byte) 0xFF, theCpu.C);
+        assertEquals(1, theCpu.getF(theCpu.F_N));
+        assertEquals(0, theCpu.getF(theCpu.F_Z));
+        assertEquals(0x0101, theCpu.PC);
     }
 
     @Test
@@ -188,7 +262,12 @@ public class OpCodesTest
     {
         // LD C,d8  2:8  - - - -
         theCpu.memory[0x0100] = (byte) 0x0E;
-        assertTrue(false);
+        theCpu.memory[0x0101] = 0x0A;
+        theCpu.C = 0x00;
+        theCpu.processOpCode();
+
+        assertEquals(0x0A, theCpu.C);
+        assertEquals(0x0102, theCpu.PC);
     }
 
     @Test
@@ -212,7 +291,15 @@ public class OpCodesTest
     {
         // LD DE,d16  3:12  - - - -
         theCpu.memory[0x0100] = (byte) 0x11;
-        assertTrue(false);
+        theCpu.memory[0x0101] = 0x02;
+        theCpu.memory[0x0102] = 0x01;
+        theCpu.D = 0x00;
+        theCpu.E = 0x00;
+        theCpu.processOpCode();
+
+        assertEquals(0x01, theCpu.D);
+        assertEquals(0x02, theCpu.E);
+        assertEquals(0x0103, theCpu.PC);
     }
 
     @Test
@@ -220,7 +307,13 @@ public class OpCodesTest
     {
         // LD (DE),A  1:8  - - - -
         theCpu.memory[0x0100] = (byte) 0x12;
-        assertTrue(false);
+        theCpu.A = 0x11;
+        theCpu.D = 0x11;
+        theCpu.E = 0x22;
+        theCpu.processOpCode();
+        
+        assertEquals(0x11, theCpu.memory[0x1122]);
+        assertEquals(0x0101, theCpu.PC);
     }
 
     @Test
@@ -228,7 +321,13 @@ public class OpCodesTest
     {
         // INC DE  1:8  - - - -
         theCpu.memory[0x0100] = (byte) 0x13;
-        assertTrue(false);
+
+        theCpu.D = 0x01;
+        theCpu.E = 0x04;
+
+        theCpu.processOpCode();
+        assertEquals(0x0105, ByteUtil.combine(theCpu.D, theCpu.E));
+        assertEquals(0x0101, theCpu.PC);
     }
 
     @Test
@@ -236,7 +335,29 @@ public class OpCodesTest
     {
         // INC D  1:4  Z 0 H -
         theCpu.memory[0x0100] = (byte) 0x14;
-        assertTrue(false);
+
+        // > 0
+        theCpu.memory[0x0100] = (byte) 0x0C;
+        theCpu.D = 0x00;
+        theCpu.processOpCode();
+
+        assertEquals(0x01, theCpu.D);
+        assertEquals(0x0101, theCpu.PC);
+        assertEquals(0, theCpu.getF(theCpu.F_Z));
+        assertEquals(0, theCpu.getF(theCpu.F_N));
+        assertEquals(0x0101, theCpu.PC);
+
+        // == 0
+        theCpu.init();
+        theCpu.memory[0x0100] = (byte) 0x0C;
+        theCpu.D = (byte) 0xFF;
+        theCpu.processOpCode();
+
+        assertEquals(0x00, theCpu.D);
+        assertEquals(0x0101, theCpu.PC);
+        assertEquals(1, theCpu.getF(theCpu.F_Z));
+        assertEquals(0, theCpu.getF(theCpu.F_N));
+        assertEquals(0x0101, theCpu.PC);
     }
 
     @Test
@@ -244,7 +365,32 @@ public class OpCodesTest
     {
         // DEC D  1:4  Z 1 H -
         theCpu.memory[0x0100] = (byte) 0x15;
-        assertTrue(false);
+
+        // > 0
+        theCpu.D = 0x02;
+        theCpu.processOpCode();
+        assertEquals(0x01, theCpu.D);
+        assertEquals(1, theCpu.getF(theCpu.F_N));
+        assertEquals(0, theCpu.getF(theCpu.F_Z));
+        assertEquals(0x0101, theCpu.PC);
+
+        // == 0
+        theCpu.init();
+        theCpu.D = 0x01;
+        theCpu.processOpCode();
+        assertEquals(0x00, theCpu.D);
+        assertEquals(0x0101, theCpu.PC);
+        assertEquals(1, theCpu.getF(theCpu.F_N));
+        assertEquals(1, theCpu.getF(theCpu.F_Z));
+
+        // < 0
+        theCpu.init();
+        theCpu.D = 0x00;
+        theCpu.processOpCode();
+        assertEquals((byte) 0xFF, theCpu.D);
+        assertEquals(0x0101, theCpu.PC);
+        assertEquals(1, theCpu.getF(theCpu.F_N));
+        assertEquals(0, theCpu.getF(theCpu.F_Z));
     }
 
     @Test
@@ -252,7 +398,12 @@ public class OpCodesTest
     {
         // LD D,d8  2:8  - - - -
         theCpu.memory[0x0100] = (byte) 0x16;
-        assertTrue(false);
+        theCpu.memory[0x0101] = 0x0A;
+        theCpu.D = 0x00;
+        theCpu.processOpCode();
+
+        assertEquals(0x0A, theCpu.D);
+        assertEquals(0x0102, theCpu.PC);
     }
 
     @Test
@@ -268,7 +419,10 @@ public class OpCodesTest
     {
         // JR r8  2:12  - - - -
         theCpu.memory[0x0100] = (byte) 0x18;
-        assertTrue(false);
+        theCpu.memory[0x0101] = 0x33;
+        theCpu.processOpCode();
+
+        assertEquals(0x0133, theCpu.PC);
     }
 
     @Test
