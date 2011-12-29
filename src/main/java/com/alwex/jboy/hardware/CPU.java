@@ -182,7 +182,7 @@ public class CPU extends AbstractHardware
             //INC BC  1:8  - - - -
             case 0x03:
                 label = "INC BC  1:8  - - - -";
-                
+
                 break;
 
             //INC B  1:4  Z 0 H -
@@ -398,10 +398,7 @@ public class CPU extends AbstractHardware
                 {
                     PC += (memory[PC + 1] & 0xff);
                 }
-                else
-                {
-                    PC += 2;
-                }
+                PC += 2;
                 break;
 
             //ADD HL,HL  1:8  - 0 H C
@@ -448,6 +445,11 @@ public class CPU extends AbstractHardware
             //JR NC,r8  2:12/8  - - - -
             case 0x30:
                 label = "JR NC,r8  2:12/8  - - - -";
+                if (getF(F_C) == 0)
+                {
+                    PC += (memory[PC + 1] & 0xff);
+                }
+                PC += 2;
                 break;
 
             //LD SP,d16  3:12  - - - -
@@ -498,6 +500,11 @@ public class CPU extends AbstractHardware
             //JR C,r8  2:12/8  - - - -
             case 0x38:
                 label = "JR C,r8  2:12/8  - - - -";
+                if (getF(F_C) == 1)
+                {
+                    PC += (memory[PC + 1] & 0xff);
+                }
+                PC += 2;
                 break;
 
             //ADD HL,SP  1:8  - 0 H C
