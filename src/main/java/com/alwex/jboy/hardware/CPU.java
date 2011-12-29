@@ -216,6 +216,7 @@ public class CPU extends AbstractHardware
             //ADD HL,BC  1:8  - 0 H C
             case 0x09:
                 label = "ADD HL,BC  1:8  - 0 H C";
+                this.ADD_HL_XX(Register.BC);
                 break;
 
             //LD A,(BC)  1:8  - - - -
@@ -302,6 +303,7 @@ public class CPU extends AbstractHardware
             //ADD HL,DE  1:8  - 0 H C
             case 0x19:
                 label = "ADD HL,DE  1:8  - 0 H C";
+                this.ADD_HL_XX(Register.DE);
                 break;
 
             //LD A,(DE)  1:8  - - - -
@@ -404,6 +406,7 @@ public class CPU extends AbstractHardware
             //ADD HL,HL  1:8  - 0 H C
             case 0x29:
                 label = "ADD HL,HL  1:8  - 0 H C";
+                this.ADD_HL_XX(Register.HL);
                 break;
 
             //LD A,(HL+)  1:8  - - - -
@@ -488,7 +491,7 @@ public class CPU extends AbstractHardware
             //LD (HL),d8  2:12  - - - -
             case 0x36:
                 label = "LD (HL),d8  2:12  - - - -";
-                memory[ByteUtil.combine(L, H)] = memory[PC + 1];
+                memory[ByteUtil.combine(H, L)] = memory[PC + 1];
                 PC += 2;
                 break;
 
@@ -510,6 +513,7 @@ public class CPU extends AbstractHardware
             //ADD HL,SP  1:8  - 0 H C
             case 0x39:
                 label = "ADD HL,SP  1:8  - 0 H C";
+                this.ADD_HL_XX(Register.SP);
                 break;
 
             //LD A,(HL-)  1:8  - - - -
@@ -592,7 +596,7 @@ public class CPU extends AbstractHardware
             //LD B,(HL)  1:8  - - - -
             case 0x46:
                 label = "LD B,(HL)  1:8  - - - -";
-                B = memory[ByteUtil.combine(L, H)];
+                B = memory[ByteUtil.combine(H, L)];
                 PC++;
                 break;
 
@@ -648,7 +652,7 @@ public class CPU extends AbstractHardware
             //LD C,(HL)  1:8  - - - -
             case 0x4E:
                 label = "LD C,(HL)  1:8  - - - -";
-                C = memory[ByteUtil.combine(L, H)];
+                C = memory[ByteUtil.combine(H, L)];
                 PC++;
                 break;
 
@@ -704,7 +708,7 @@ public class CPU extends AbstractHardware
             //LD D,(HL)  1:8  - - - -
             case 0x56:
                 label = "LD D,(HL)  1:8  - - - -";
-                D = memory[ByteUtil.combine(L, H)];
+                D = memory[ByteUtil.combine(H, L)];
                 PC++;
                 break;
 
@@ -760,7 +764,7 @@ public class CPU extends AbstractHardware
             //LD E,(HL)  1:8  - - - -
             case 0x5E:
                 label = "LD E,(HL)  1:8  - - - -";
-                E = memory[ByteUtil.combine(L, H)];
+                E = memory[ByteUtil.combine(H, L)];
                 PC++;
                 break;
 
@@ -816,7 +820,7 @@ public class CPU extends AbstractHardware
             //LD H,(HL)  1:8  - - - -
             case 0x66:
                 label = "LD H,(HL)  1:8  - - - -";
-                H = memory[ByteUtil.combine(L, H)];
+                H = memory[ByteUtil.combine(H, L)];
                 PC++;
                 break;
 
@@ -872,6 +876,8 @@ public class CPU extends AbstractHardware
             //LD L,(HL)  1:8  - - - -
             case 0x6E:
                 label = "LD L,(HL)  1:8  - - - -";
+                L = memory[ByteUtil.combine(H, L)];
+                PC++;
                 break;
 
             //LD L,A  1:4  - - - -  
@@ -973,7 +979,7 @@ public class CPU extends AbstractHardware
             //LD A,(HL)  1:8  - - - -
             case 0x7E:
                 label = "LD A,(HL)  1:8  - - - -";
-                A = memory[ByteUtil.combine(L, H)];
+                A = memory[ByteUtil.combine(H, L)];
                 PC++;
                 break;
 
@@ -987,31 +993,37 @@ public class CPU extends AbstractHardware
             //ADD A,B  1:4  Z 0 H C
             case 0x80:
                 label = "ADD A,B  1:4  Z 0 H C";
+                this.ADD_X_X(Register.A, Register.B);
                 break;
 
             //ADD A,C  1:4  Z 0 H C
             case 0x81:
                 label = "ADD A,C  1:4  Z 0 H C";
+                this.ADD_X_X(Register.A, Register.C);
                 break;
 
             //ADD A,D  1:4  Z 0 H C
             case 0x82:
                 label = "ADD A,D  1:4  Z 0 H C";
+                this.ADD_X_X(Register.A, Register.D);
                 break;
 
             //ADD A,E  1:4  Z 0 H C
             case 0x83:
                 label = "ADD A,E  1:4  Z 0 H C";
+                this.ADD_X_X(Register.A, Register.E);
                 break;
 
             //ADD A,H  1:4  Z 0 H C
             case 0x84:
                 label = "ADD A,H  1:4  Z 0 H C";
+                this.ADD_X_X(Register.A, Register.H);
                 break;
 
             //ADD A,L  1:4  Z 0 H C
             case 0x85:
                 label = "ADD A,L  1:4  Z 0 H C";
+                this.ADD_X_X(Register.A, Register.L);
                 break;
 
             //ADD A,(HL)  1:8  Z 0 H C
@@ -1022,6 +1034,7 @@ public class CPU extends AbstractHardware
             //ADD A,A  1:4  Z 0 H C
             case 0x87:
                 label = "ADD A,A  1:4  Z 0 H C";
+                this.ADD_X_X(Register.A, Register.A);
                 break;
 
             //ADC A,B  1:4  Z 0 H C
@@ -1744,7 +1757,7 @@ public class CPU extends AbstractHardware
                 System.out.println("erreur pas géré le ld");
         }
 
-        memory[ByteUtil.combine(L, H)] = value;
+        memory[ByteUtil.combine(H, L)] = value;
         PC++;
     }
 
@@ -1801,6 +1814,7 @@ public class CPU extends AbstractHardware
                 result = BC;
                 B = (byte) (BC >> 8 & 0xFF);
                 C = (byte) (BC & 0x00FF);
+                halfCarry = C == 0;
                 break;
             case DE:
                 int DE = ByteUtil.combine(D, E);
@@ -1808,13 +1822,20 @@ public class CPU extends AbstractHardware
                 result = DE;
                 D = (byte) (DE >> 8 & 0xFF00);
                 E = (byte) (DE & 0x00FF);
+                halfCarry = E == 0;
                 break;
             case SP:
                 SP--;
                 result = SP;
                 break;
             case HL:
-                throw new UnsupportedOperationException("DEC HL");
+                int HLValue = ByteUtil.combine(H, L);
+                HLValue--;
+                result = HLValue;
+                H = (byte) (HLValue >> 8 & 0xFF);
+                L = (byte) (HLValue & 0x00FF);
+                halfCarry = L == 0;
+                break;
         }
 
         if (result == 0)
@@ -1836,5 +1857,169 @@ public class CPU extends AbstractHardware
         }
 
         PC++;
+    }
+
+    private void ADD_HL_XX(Register register)
+    {
+        byte a1 = 0, b1 = 0, a2 = 0, b2 = 0;
+        int HLValue = ByteUtil.combine(H, L);
+
+        a1 = H;
+        b1 = L;
+
+        switch (register)
+        {
+            case SP:
+                HLValue += SP;
+                break;
+            case BC:
+                int BCValue = ByteUtil.combine(B, C);
+                HLValue += BCValue;
+                break;
+            case DE:
+                int DEValue = ByteUtil.combine(D, E);
+                HLValue += DEValue;
+                break;
+            case HL:
+                int HLValue2 = ByteUtil.combine(H, L);
+                HLValue += HLValue2;
+                break;
+        }
+
+        H = (byte) (HLValue >> 8 & 0xFF);
+        L = (byte) (HLValue & 0x00FF);
+
+        a2 = H;
+        b2 = L;
+
+        setF(F_N, 0);
+
+        if (b2 == 0x00)
+        {
+            setF(F_H, 1);
+        }
+
+        if ((a1 != a2) && (a2 == 0x00))
+        {
+            setF(F_C, 1);
+        }
+        PC += 1;
+    }
+
+    private void ADD_X_X(Register register1, Register register2)
+    {
+        byte theValueBefore = 0x00;
+        byte theValue = 0x00;
+        byte theResult = 0x00;
+        boolean halfCarry = false;
+
+        switch (register2)
+        {
+            case A:
+                theValue = A;
+                break;
+            case B:
+                theValue = B;
+                break;
+            case C:
+                theValue = C;
+                break;
+            case D:
+                theValue = D;
+                break;
+            case E:
+                theValue = E;
+                break;
+            case H:
+                theValue = H;
+                break;
+            case L:
+                theValue = L;
+                break;
+            default:
+        }
+
+
+        switch (register1)
+        {
+            case A:
+                theValueBefore = A;
+                A += theValue;
+                theResult = A;
+                break;
+            case B:
+                theValueBefore = B;
+                B += theValue;
+                theResult = B;
+                break;
+            case C:
+                theValueBefore = C;
+                C += theValue;
+                theResult = C;
+                break;
+            case D:
+                theValueBefore = D;
+                D += theValue;
+                theResult = D;
+                break;
+            case E:
+                theValueBefore = E;
+                E += theValue;
+                theResult = E;
+                break;
+            case H:
+                theValueBefore = H;
+                H += theValue;
+                theResult = H;
+                break;
+            case L:
+                theValueBefore = L;
+                L += theValue;
+                theResult = L;
+                break;
+            default:
+        }
+
+        if (this.needHalfCarry(theValueBefore, theResult))
+        {
+            halfCarry = true;
+        }
+
+        if (theResult == 0)
+        {
+            setF(F_Z, 1);
+            setF(F_C, 1);
+        }
+        else
+        {
+            setF(F_Z, 0);
+            setF(F_C, 0);
+        }
+
+        // addition donc 0
+        setF(F_N, 0);
+
+        // half carry
+        if (halfCarry)
+        {
+            setF(F_H, 1);
+        }
+
+        PC += 1;
+    }
+
+    public boolean needHalfCarry(byte before, byte after)
+    {
+        boolean halfCarry = false;
+
+        byte firstNibbleAfter = (byte) (after & 0xF0);
+        byte firstNibbleBefore = (byte) (before & 0xF0);
+
+        if (firstNibbleAfter != firstNibbleBefore)
+        {
+            halfCarry = true;
+        }
+
+        return halfCarry;
     }
 }

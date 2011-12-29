@@ -4,6 +4,7 @@
  */
 package com.alwex.jboy.sandbox;
 
+import com.alwex.jboy.utils.ByteUtil;
 import com.alwex.jboy.utils.Debug;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -141,7 +142,7 @@ public class Sandbox
         for (String code : opcodes)
         {
 
-            if (! code.contains("withborder"))
+            if (!code.contains("withborder"))
             {
                 System.out.println("// " + code);
                 System.out.println("case " + Debug.toHex(i) + ": label = \"" + code + "\"; break;");
@@ -150,27 +151,27 @@ public class Sandbox
             i++;
         }
     }
-    
+
     @Test
     public void testNegative()
     {
         System.out.println((byte) 0xfc);
     }
-    
+
     private void changeValues(Byte theA)
     {
         theA = 10;
     }
-    
+
     @Test
     public void referenceTest()
     {
         Byte a = new Byte("5");
         Byte b = new Byte("0");
-        
+
         this.changeValues(a);
         this.changeValues(b);
-        
+
         System.out.println(a);
         System.out.println(b);
     }
@@ -186,17 +187,29 @@ public class Sandbox
         for (String code : opcodes)
         {
 
-            if (! code.contains("withborder"))
+            if (!code.contains("withborder"))
             {
                 String[] codeValues = code.split(" ");
-                System.out.println("@Test public void test_0x" + Debug.toHex((byte)i) + "_" + codeValues[0] + "(){");
+                System.out.println("@Test public void test_0x" + Debug.toHex((byte) i) + "_" + codeValues[0] + "(){");
                 System.out.println("        // " + code);
-                System.out.println("theCpu.memory[0x0100] = (byte) 0x" + Debug.toHex((byte)i) + ";" );
+                System.out.println("theCpu.memory[0x0100] = (byte) 0x" + Debug.toHex((byte) i) + ";");
                 System.out.println("assertTrue(false);");
                 System.out.println("}");
                 System.out.println("");
             }
             i++;
         }
+    }
+
+    @Test
+    public void testHalCarryDetection()
+    {
+        byte a = 0x1F, b = 0x01;
+        System.out.println(ByteUtil.toHex((byte) (a & 0xf0)));
+        System.out.println(ByteUtil.toHex((byte) (a & 0x0f)));
+        a = 0x20;
+        System.out.println(ByteUtil.toHex((byte) (a & 0x0f)));
+
+        
     }
 }
