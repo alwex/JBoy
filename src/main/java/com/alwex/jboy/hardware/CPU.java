@@ -20,7 +20,7 @@ public class CPU extends AbstractHardware
     public enum Register
     {
 
-        A, B, C, D, E, F, H, L, HL, BC, DE, SP, F_C, F_H, F_N, F_Z, n, nn;
+        A, B, C, D, E, F, H, L, HL, BC, DE, SP, F_C, F_H, F_N, F_Z, n, nn, _HL_;
     }
     protected static Logger logger;
     private static CPU instance;
@@ -182,12 +182,13 @@ public class CPU extends AbstractHardware
             //INC BC  1:8  - - - -
             case 0x03:
                 label = "INC BC  1:8  - - - -";
-
+                this.INC(Register.BC);
                 break;
 
             //INC B  1:4  Z 0 H -
             case 0x04:
                 label = "INC B  1:4  Z 0 H -";
+                this.INC(Register.B);
                 break;
 
             //DEC B  1:4  Z 1 H -
@@ -233,6 +234,7 @@ public class CPU extends AbstractHardware
             //INC C  1:4  Z 0 H -
             case 0x0C:
                 label = "INC C  1:4  Z 0 H -";
+                this.INC(Register.C);
                 break;
 
             //DEC C  1:4  Z 1 H -
@@ -271,11 +273,13 @@ public class CPU extends AbstractHardware
             //INC DE  1:8  - - - -
             case 0x13:
                 label = "INC DE  1:8  - - - -";
+                this.INC(Register.DE);
                 break;
 
             //INC D  1:4  Z 0 H -
             case 0x14:
                 label = "INC D  1:4  Z 0 H -";
+                this.INC(Register.D);
                 break;
 
             //DEC D  1:4  Z 1 H -
@@ -320,6 +324,7 @@ public class CPU extends AbstractHardware
             //INC E  1:4  Z 0 H -
             case 0x1C:
                 label = "INC E  1:4  Z 0 H -";
+                this.INC(Register.E);
                 break;
 
             //DEC E  1:4  Z 1 H -
@@ -370,11 +375,13 @@ public class CPU extends AbstractHardware
             //INC HL  1:8  - - - -
             case 0x23:
                 label = "INC HL  1:8  - - - -";
+                this.INC(Register.HL);
                 break;
 
             //INC H  1:4  Z 0 H -
             case 0x24:
                 label = "INC H  1:4  Z 0 H -";
+                this.INC(Register.H);
                 break;
 
             //DEC H  1:4  Z 1 H -
@@ -423,6 +430,7 @@ public class CPU extends AbstractHardware
             //INC L  1:4  Z 0 H -
             case 0x2C:
                 label = "INC L  1:4  Z 0 H -";
+                this.INC(Register.L);
                 break;
 
             //DEC L  1:4  Z 1 H -
@@ -476,11 +484,13 @@ public class CPU extends AbstractHardware
             //INC SP  1:8  - - - -
             case 0x33:
                 label = "INC SP  1:8  - - - -";
+                this.INC(Register.SP);
                 break;
 
             //INC (HL)  1:12  Z 0 H -
             case 0x34:
                 label = "INC (HL)  1:12  Z 0 H -";
+                this.INC(Register._HL_);
                 break;
 
             //DEC (HL)  1:12  Z 1 H -
@@ -530,6 +540,7 @@ public class CPU extends AbstractHardware
             //INC A  1:4  Z 0 H -
             case 0x3C:
                 label = "INC A  1:4  Z 0 H -";
+                this.INC(Register.A);
                 break;
 
             //DEC A  1:4  Z 1 H -
@@ -1080,260 +1091,289 @@ public class CPU extends AbstractHardware
             //SUB B  1:4  Z 1 H C
             case 0x90:
                 label = "SUB B  1:4  Z 1 H C";
+                this.SUB(Register.B);
                 break;
 
             //SUB C  1:4  Z 1 H C
             case 0x91:
                 label = "SUB C  1:4  Z 1 H C";
+                this.SUB(Register.C);
                 break;
 
             //SUB D  1:4  Z 1 H C
             case 0x92:
                 label = "SUB D  1:4  Z 1 H C";
+                this.SUB(Register.D);
                 break;
 
             //SUB E  1:4  Z 1 H C
             case 0x93:
                 label = "SUB E  1:4  Z 1 H C";
+                this.SUB(Register.E);
                 break;
 
             //SUB H  1:4  Z 1 H C
             case 0x94:
                 label = "SUB H  1:4  Z 1 H C";
+                this.SUB(Register.H);
                 break;
 
             //SUB L  1:4  Z 1 H C
             case 0x95:
                 label = "SUB L  1:4  Z 1 H C";
+                this.SUB(Register.L);
                 break;
 
             //SUB (HL)  1:8  Z 1 H C
             case 0x96:
                 label = "SUB (HL)  1:8  Z 1 H C";
+                this.SUB(Register._HL_);
                 break;
 
             //SUB A  1:4  Z 1 H C
             case 0x97:
                 label = "SUB A  1:4  Z 1 H C";
+                this.SUB(Register.A);
                 break;
 
             //SBC A,B  1:4  Z 1 H C
             case 0x98:
                 label = "SBC A,B  1:4  Z 1 H C";
+                this.SBC(Register.B);
                 break;
 
             //SBC A,C  1:4  Z 1 H C
             case 0x99:
                 label = "SBC A,C  1:4  Z 1 H C";
+                this.SBC(Register.C);
                 break;
 
             //SBC A,D  1:4  Z 1 H C
             case 0x9A:
                 label = "SBC A,D  1:4  Z 1 H C";
+                this.SBC(Register.D);
                 break;
 
             //SBC A,E  1:4  Z 1 H C
             case 0x9B:
                 label = "SBC A,E  1:4  Z 1 H C";
+                this.SBC(Register.E);
                 break;
 
             //SBC A,H  1:4  Z 1 H C
             case 0x9C:
                 label = "SBC A,H  1:4  Z 1 H C";
+                this.SBC(Register.H);
                 break;
 
             //SBC A,L  1:4  Z 1 H C
             case 0x9D:
                 label = "SBC A,L  1:4  Z 1 H C";
+                this.SBC(Register.L);
                 break;
 
             //SBC A,(HL)  1:8  Z 1 H C
             case 0x9E:
                 label = "SBC A,(HL)  1:8  Z 1 H C";
+                this.SBC(Register._HL_);
                 break;
 
             //SBC A,A  1:4  Z 1 H C  
             case 0x9F:
                 label = "SBC A,A  1:4  Z 1 H C  ";
+                this.SBC(Register.A);
                 break;
 
             //AND B  1:4  Z 0 1 0
             case 0xA0:
                 label = "AND B  1:4  Z 0 1 0";
+                this.AND(Register.B);
                 break;
 
             //AND C  1:4  Z 0 1 0
             case 0xA1:
                 label = "AND C  1:4  Z 0 1 0";
+                this.AND(Register.C);
                 break;
 
             //AND D  1:4  Z 0 1 0
             case 0xA2:
                 label = "AND D  1:4  Z 0 1 0";
+                this.AND(Register.D);
                 break;
 
             //AND E  1:4  Z 0 1 0
             case 0xA3:
                 label = "AND E  1:4  Z 0 1 0";
+                this.AND(Register.E);
                 break;
 
             //AND H  1:4  Z 0 1 0
             case 0xA4:
                 label = "AND H  1:4  Z 0 1 0";
+                this.AND(Register.H);
                 break;
 
             //AND L  1:4  Z 0 1 0
             case 0xA5:
                 label = "AND L  1:4  Z 0 1 0";
+                this.AND(Register.L);
                 break;
 
             //AND (HL)  1:8  Z 0 1 0
             case 0xA6:
                 label = "AND (HL)  1:8  Z 0 1 0";
+                this.AND(Register._HL_);
                 break;
 
             //AND A  1:4  Z 0 1 0
             case 0xA7:
                 label = "AND A  1:4  Z 0 1 0";
-                A = (byte) (A & memory[PC + 1]);
-                if (A == 0)
-                {
-                    setF(F_Z, 1);
-                }
-                setF(F_N, 0);
-                setF(F_H, 1);
-                setF(F_C, 0);
-
-                PC++;
+                this.AND(Register.A);
                 break;
 
             //XOR B  1:4  Z 0 0 0
             case 0xA8:
                 label = "XOR B  1:4  Z 0 0 0";
+                this.XOR(Register.B);
                 break;
 
             //XOR C  1:4  Z 0 0 0
             case 0xA9:
                 label = "XOR C  1:4  Z 0 0 0";
+                this.XOR(Register.C);
                 break;
 
             //XOR D  1:4  Z 0 0 0
             case 0xAA:
                 label = "XOR D  1:4  Z 0 0 0";
+                this.XOR(Register.D);
                 break;
 
             //XOR E  1:4  Z 0 0 0
             case 0xAB:
                 label = "XOR E  1:4  Z 0 0 0";
+                this.XOR(Register.E);
                 break;
 
             //XOR H  1:4  Z 0 0 0
             case 0xAC:
                 label = "XOR H  1:4  Z 0 0 0";
+                this.XOR(Register.H);
                 break;
 
             //XOR L  1:4  Z 0 0 0
             case 0xAD:
                 label = "XOR L  1:4  Z 0 0 0";
+                this.XOR(Register.L);
                 break;
 
             //XOR (HL)  1:8  Z 0 0 0
             case 0xAE:
                 label = "XOR (HL)  1:8  Z 0 0 0";
+                this.XOR(Register._HL_);
                 break;
 
             //XOR A  1:4  Z 0 0 0  
             case 0xAF:
                 label = "XOR A  1:4  Z 0 0 0  ";
-                A = (byte) ((A ^ A) & 0xff);
-                if (A == 0)
-                {
-                    setF(F_Z, 1);
-                }
-                setF(F_N, 0);
-                setF(F_H, 0);
-                setF(F_C, 0);
-                PC++;
+                this.XOR(Register.A);
                 break;
 
             //OR B  1:4  Z 0 0 0
             case 0xB0:
                 label = "OR B  1:4  Z 0 0 0";
+                this.OR(Register.B);
                 break;
 
             //OR C  1:4  Z 0 0 0
             case 0xB1:
                 label = "OR C  1:4  Z 0 0 0";
+                this.OR(Register.C);
                 break;
 
             //OR D  1:4  Z 0 0 0
             case 0xB2:
                 label = "OR D  1:4  Z 0 0 0";
+                this.OR(Register.D);
                 break;
 
             //OR E  1:4  Z 0 0 0
             case 0xB3:
                 label = "OR E  1:4  Z 0 0 0";
+                this.OR(Register.E);
                 break;
 
             //OR H  1:4  Z 0 0 0
             case 0xB4:
                 label = "OR H  1:4  Z 0 0 0";
+                this.OR(Register.H);
                 break;
 
             //OR L  1:4  Z 0 0 0
             case 0xB5:
                 label = "OR L  1:4  Z 0 0 0";
+                this.OR(Register.L);
                 break;
 
             //OR (HL)  1:8  Z 0 0 0
             case 0xB6:
                 label = "OR (HL)  1:8  Z 0 0 0";
+                this.OR(Register._HL_);
                 break;
 
             //OR A  1:4  Z 0 0 0
             case 0xB7:
                 label = "OR A  1:4  Z 0 0 0";
+                this.OR(Register.A);
                 break;
 
             //CP B  1:4  Z 1 H C
             case 0xB8:
                 label = "CP B  1:4  Z 1 H C";
+                this.CP(Register.B);
                 break;
 
             //CP C  1:4  Z 1 H C
             case 0xB9:
                 label = "CP C  1:4  Z 1 H C";
+                this.CP(Register.C);
                 break;
 
             //CP D  1:4  Z 1 H C
             case 0xBA:
                 label = "CP D  1:4  Z 1 H C";
+                this.CP(Register.D);
                 break;
 
             //CP E  1:4  Z 1 H C
             case 0xBB:
                 label = "CP E  1:4  Z 1 H C";
+                this.CP(Register.E);
                 break;
 
             //CP H  1:4  Z 1 H C
             case 0xBC:
                 label = "CP H  1:4  Z 1 H C";
+                this.CP(Register.H);
                 break;
 
             //CP L  1:4  Z 1 H C
             case 0xBD:
                 label = "CP L  1:4  Z 1 H C";
+                this.CP(Register.L);
                 break;
 
             //CP (HL)  1:8  Z 1 H C
             case 0xBE:
                 label = "CP (HL)  1:8  Z 1 H C";
+                this.CP(Register._HL_);
                 break;
 
             //CP A  1:4  Z 1 H C  
             case 0xBF:
                 label = "CP A  1:4  Z 1 H C  ";
+                this.CP(Register.A);
                 break;
 
             //RET NZ  1:20/8  - - - -
@@ -1906,6 +1946,92 @@ public class CPU extends AbstractHardware
         PC += 1;
     }
 
+    public void INC(Register register)
+    {
+        boolean doubleRegister = false;
+        byte theValueAfter = 0x00;
+        byte theValueBefore = 0x00;
+
+        switch (register)
+        {
+            case A:
+                theValueBefore = A;
+                A++;
+                theValueAfter = A;
+                break;
+            case B:
+                theValueBefore = B;
+                B++;
+                theValueAfter = B;
+                break;
+            case C:
+                theValueBefore = C;
+                C++;
+                theValueAfter = C;
+                break;
+            case D:
+                theValueBefore = D;
+                D++;
+                theValueAfter = D;
+                break;
+            case E:
+                theValueBefore = E;
+                E++;
+                theValueAfter = E;
+                break;
+            case F:
+                theValueBefore = F;
+                F++;
+                theValueAfter = F;
+                break;
+            case H:
+                theValueBefore = H;
+                H++;
+                theValueAfter = H;
+                break;
+            case L:
+                theValueBefore = L;
+                L++;
+                theValueAfter = L;
+                break;
+            case HL:
+                doubleRegister = true;
+                break;
+            case BC:
+                doubleRegister = true;
+                break;
+            case DE:
+                doubleRegister = true;
+                break;
+            case SP:
+                doubleRegister = true;
+                SP++;
+                break;
+            case _HL_:
+                memory[ByteUtil.combine(H, L)]++;
+                doubleRegister = true;
+                break;
+        }
+
+        if (!doubleRegister)
+        {
+            setF(F_N, 0);
+            setF(F_Z, 0);
+            if (theValueAfter == 0x00)
+            {
+                setF(F_Z, 1);
+            }
+
+            setF(F_H, 0);
+            if ((((theValueAfter & 0x0f) - (theValueBefore & 0x0f)) & 0x10) != 0)
+            {
+                setF(F_H, 1);
+            }
+        }
+
+        PC += 1;
+    }
+
     private void ADD_X_X(Register register1, Register register2)
     {
         byte theValueBefore = 0x00;
@@ -1985,27 +2111,370 @@ public class CPU extends AbstractHardware
             halfCarry = true;
         }
 
+        setF(F_Z, 0);
         if (theResult == 0)
         {
             setF(F_Z, 1);
-            setF(F_C, 1);
         }
-        else
+
+        setF(F_C, 0);
+        if (this.needCarry(theValueBefore, theValue))
         {
-            setF(F_Z, 0);
-            setF(F_C, 0);
+            setF(F_C, 1);
         }
 
         // addition donc 0
         setF(F_N, 0);
 
         // half carry
-        if (halfCarry)
+        setF(F_H, 0);
+        if (this.needHalfCarry(theValueBefore, theResult))
         {
             setF(F_H, 1);
         }
 
         PC += 1;
+    }
+
+    private void SUB(Register register)
+    {
+        byte theValue = 0x00;
+
+        switch (register)
+        {
+            case A:
+                theValue = A;
+                break;
+            case B:
+                theValue = B;
+                break;
+            case C:
+                theValue = C;
+                break;
+            case D:
+                theValue = D;
+                break;
+            case E:
+                theValue = E;
+                break;
+            case F:
+                theValue = F;
+                break;
+            case H:
+                theValue = H;
+                break;
+            case L:
+                theValue = L;
+                break;
+            case _HL_:
+                theValue = memory[ByteUtil.combine(H, L)];
+                break;
+        }
+
+        A -= theValue;
+
+        // mise à jour des flags
+        if (A == 0x00)
+        {
+            setF(F_Z, 1);
+        }
+        // soustraction donc 1
+        setF(F_N, 1);
+
+        setF(F_C, 0);
+        if ((A & 0x100) != 0)
+        {
+            setF(F_C, 1);
+        }
+
+        setF(F_H, 0);
+        if ((((A & 0x0f) - (theValue & 0x0f)) & 0x10) != 0)
+        {
+            setF(F_H, 1);
+        }
+
+        PC += 1;
+    }
+
+    private void SBC(Register register)
+    {
+        byte theValue = 0x00;
+
+        switch (register)
+        {
+            case A:
+                theValue = A;
+                break;
+            case B:
+                theValue = B;
+                break;
+            case C:
+                theValue = C;
+                break;
+            case D:
+                theValue = D;
+                break;
+            case E:
+                theValue = E;
+                break;
+            case F:
+                theValue = F;
+                break;
+            case H:
+                theValue = H;
+                break;
+            case L:
+                theValue = L;
+                break;
+            case _HL_:
+                theValue = memory[ByteUtil.combine(H, L)];
+                break;
+        }
+
+        A -= theValue;
+        A -= getF(F_C);
+
+        // mise à jour des flags
+        if (A == 0x00)
+        {
+            setF(F_Z, 1);
+        }
+        // soustraction donc 1
+        setF(F_N, 1);
+
+        setF(F_C, 0);
+        if ((A & 0x100) != 0)
+        {
+            setF(F_C, 1);
+        }
+
+        setF(F_H, 0);
+        if ((((A & 0x0f) - (theValue & 0x0f)) & 0x10) != 0)
+        {
+            setF(F_H, 1);
+        }
+
+        PC += 1;
+    }
+
+    public void AND(Register register)
+    {
+        byte theValue = 0x00;
+
+        switch (register)
+        {
+            case A:
+                theValue = A;
+                break;
+            case B:
+                theValue = B;
+                break;
+            case C:
+                theValue = C;
+                break;
+            case D:
+                theValue = D;
+                break;
+            case E:
+                theValue = E;
+                break;
+            case F:
+                theValue = F;
+                break;
+            case H:
+                theValue = H;
+                break;
+            case L:
+                theValue = L;
+                break;
+            case _HL_:
+                theValue = memory[ByteUtil.combine(H, L)];
+                break;
+        }
+
+        A &= theValue;
+
+        // mise à jour des flags
+        if (A == 0x00)
+        {
+            setF(F_Z, 1);
+        }
+
+        setF(F_N, 0);
+        setF(F_H, 1);
+        setF(F_C, 0);
+
+        PC += 1;
+    }
+
+    public void XOR(Register register)
+    {
+        byte theValue = 0x00;
+
+        switch (register)
+        {
+            case A:
+                theValue = A;
+                break;
+            case B:
+                theValue = B;
+                break;
+            case C:
+                theValue = C;
+                break;
+            case D:
+                theValue = D;
+                break;
+            case E:
+                theValue = E;
+                break;
+            case F:
+                theValue = F;
+                break;
+            case H:
+                theValue = H;
+                break;
+            case L:
+                theValue = L;
+                break;
+            case _HL_:
+                theValue = memory[ByteUtil.combine(H, L)];
+                break;
+        }
+
+        A = (byte) ((A ^ theValue) & 0xff);
+
+        setF(F_Z, 0);
+        if (A == 0x00)
+        {
+            setF(F_Z, 1);
+        }
+        setF(F_N, 0);
+        setF(F_H, 0);
+        setF(F_C, 0);
+
+        PC += 1;
+    }
+
+    public void OR(Register register)
+    {
+        byte theValue = 0x00;
+
+        switch (register)
+        {
+            case A:
+                theValue = A;
+                break;
+            case B:
+                theValue = B;
+                break;
+            case C:
+                theValue = C;
+                break;
+            case D:
+                theValue = D;
+                break;
+            case E:
+                theValue = E;
+                break;
+            case F:
+                theValue = F;
+                break;
+            case H:
+                theValue = H;
+                break;
+            case L:
+                theValue = L;
+                break;
+            case _HL_:
+                theValue = memory[ByteUtil.combine(H, L)];
+                break;
+        }
+
+        A = (byte) ((A | theValue) & 0xff);
+
+        setF(F_Z, 0);
+        if (A == 0x00)
+        {
+            setF(F_Z, 1);
+        }
+        setF(F_N, 0);
+        setF(F_H, 0);
+        setF(F_C, 0);
+
+        PC += 1;
+    }
+
+    public void CP(Register register)
+    {
+        byte theValue = 0x00;
+
+        switch (register)
+        {
+            case A:
+                theValue = A;
+                break;
+            case B:
+                theValue = B;
+                break;
+            case C:
+                theValue = C;
+                break;
+            case D:
+                theValue = D;
+                break;
+            case E:
+                theValue = E;
+                break;
+            case F:
+                theValue = F;
+                break;
+            case H:
+                theValue = H;
+                break;
+            case L:
+                theValue = L;
+                break;
+            case _HL_:
+                theValue = memory[ByteUtil.combine(H, L)];
+                break;
+        }
+
+        byte theResult = (byte) (A - theValue);
+        
+        setF(F_Z, 0);
+        if (theResult == 0x00)
+        {
+            setF(F_Z, 1);
+        }
+        
+        // soustraction
+        setF(F_N, 1);
+        
+        setF(F_H, 0);
+        if ((((theResult & 0x0f) - (theValue & 0x0f)) & 0x10) != 0)
+        {
+            setF(F_H, 1);
+        }
+
+        setF(F_C, 0);
+        if ((theResult & 0x100) != 0)
+        {
+            setF(F_C, 1);
+        }
+
+        PC += 1;
+    }
+
+    public boolean needCarry(byte before, byte added)
+    {
+        boolean carry = false;
+        if (((before & 0xff) + (added & 0xff)) > 0xFF)
+        {
+            carry = true;
+        }
+
+        return carry;
     }
 
     public boolean needHalfCarry(byte before, byte after)

@@ -210,6 +210,6 @@ public class Sandbox
         a = 0x20;
         System.out.println(ByteUtil.toHex((byte) (a & 0x0f)));
 
-        
+        System.out.println(ByteUtil.toHex((byte) (0x10 & 0x10)));
     }
 }
