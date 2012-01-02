@@ -1,5 +1,7 @@
 package com.alwex.jboy.utils;
 
+import com.sun.swing.internal.plaf.basic.resources.basic;
+
 /**
  *
  * @author Alex
@@ -45,6 +47,15 @@ public class ByteUtil
         }
         return out;
     }
+
+    public static int getBit(byte b, int pos)
+    {
+        if ((b & (1 << pos)) != 0)
+        {
+            return 1;
+        }
+        return 0;
+    }
     
     /**
      * combine 2 octets tels que
@@ -58,5 +69,15 @@ public class ByteUtil
     {
         int result = ((((a << 8) & 0xffff | b & 0xff) & 0x0000ffff) & 0xffff);
         return result;
+    }
+
+    public static byte[] split(int aValue)
+    {
+        byte[] out = new byte[2];
+
+        out[0] = (byte) (aValue >> 8 & 0xFF);
+        out[1] = (byte) (aValue & 0xFF);
+        
+        return out;
     }
 }

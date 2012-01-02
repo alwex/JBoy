@@ -10,6 +10,7 @@ import org.apache.log4j.Logger;
  *
  * http://www.zophar.net/fileuploads/2/10809ozrmc/z80_faq.html
  * http://www.zophar.net/fileuploads/2/10810irctp/z80_faq2.html
+ * http://nocash.emubase.de/pandocs.htm#videodisplay
  */
 public class CPU extends AbstractHardware
 {
@@ -22,27 +23,29 @@ public class CPU extends AbstractHardware
 
         A, B, C, D, E, F, H, L, HL, BC, DE, SP, F_C, F_H, F_N, F_Z, n, nn, _HL_;
     }
+    // registres spéciaux valeurs en mémoire
+    public int P1 = 0xFF00, // joypad infos and system type RW
+            SB = 0xFF01, // serial transfers data RW
+            SC = 0xFF02, // SIO control RW
+            DIV = 0xFF04, // divider regsiter RW
+            TIMA = 0xFF05, // timer counter RW
+            TMA = 0xFF06, // timer modulo RW
+            TAC = 0xFF7, // timer control RW
+            IF = 0xFF0F, // interupt flag RW
+            /*
+            NR10 = 0xFF10, // sound mode 1 register RW
+            NR11 = 0xFF11, // sound mode 1 register wave pattern duty RW
+            NR12 = 0xFF12, // sound mode 1 register wave pattern duty RW
+            NR13 = 0xFF13, // sound mode 1 register wave pattern duty RW
+            NR14 = 0xFF14, // sound mode 1 register wave pattern duty RW
+            NR21 = 0xFF16, // sound mode 1 register wave pattern duty RW
+             */
+            LCDC = 0xFF40, // LCD control RW
+            STAT = 0xFF41, // LCD status RW
+            SCY = 0xFF42, // BG scroll y RW
+            SCX = 0xFF43; // BG scroll x RW
     protected static Logger logger;
     private static CPU instance;
-    public String[] opCodeDescription =
-    {
-        /*0x00*/ "NOP", /*0x01*/ "LD BC,d16", /*0x02*/ "LD (BC),A", /*0x03*/ "INC BC", /*0x04*/ "INC B", /*0x05*/ "DEC B", /*0x06*/ "LD B,d8", /*0x07*/ "RLCA", /*0x08*/ "LD (a16),SP", /*0x09*/ "ADD HL,BC", /*0x0A*/ "LD A,(BC)", /*0x0B*/ "DEC BC", /*0x0C*/ "INC C", /*0x0D*/ "DEC C", /*0x0E*/ "LD C,d8", /*0x0F*/ "RRCA",
-        /*0x10*/ "STOP 0", /*0x11*/ "LD DE,d16", /*0x12*/ "LD (DE),A", /*0x13*/ "INC DE", /*0x14*/ "INC D", /*0x15*/ "DEC D", /*0x16*/ "LD D,d8", /*0x17*/ "RLA", /*0x18*/ "JR r8", /*0x19*/ "ADD HL,DE", /*0x1A*/ "LD A,(DE)", /*0x1B*/ "DEC DE", /*0x1C*/ "INC E", /*0x1D*/ "DEC E", /*0x1E*/ "LD E,d8", /*0x1F*/ "RRA",
-        /*0x20*/ "JR NZ,r8", /*0x21*/ "LD HL,d16", /*0x22*/ "", /*0x23*/ "", /*0x24*/ "", /*0x25*/ "", /*0x26*/ "", /*0x27*/ "", /*0x28*/ "JR Z,r8", /*0x29*/ "", /*0x2A*/ "", /*0x2B*/ "", /*0x2C*/ "", /*0x2D*/ "", /*0x2E*/ "", /*0x2F*/ "",
-        /*0x30*/ "", /*0x31*/ "", /*0x32*/ "LDD (HL),A", /*0x33*/ "", /*0x34*/ "", /*0x35*/ "", /*0x36*/ "", /*0x37*/ "", /*0x38*/ "", /*0x39*/ "", /*0x3A*/ "", /*0x3B*/ "", /*0x3C*/ "", /*0x3D*/ "", /*0x3E*/ "LD A,d8", /*0x3F*/ "",
-        /*0x40*/ "", /*0x41*/ "", /*0x42*/ "", /*0x43*/ "", /*0x44*/ "", /*0x45*/ "", /*0x46*/ "", /*0x47*/ "", /*0x48*/ "", /*0x49*/ "", /*0x4A*/ "", /*0x4B*/ "", /*0x4C*/ "", /*0x4D*/ "", /*0x4E*/ "", /*0x4F*/ "",
-        /*0x50*/ "", /*0x51*/ "", /*0x52*/ "", /*0x53*/ "", /*0x54*/ "", /*0x55*/ "", /*0x56*/ "", /*0x57*/ "", /*0x58*/ "", /*0x59*/ "", /*0x5A*/ "", /*0x5B*/ "", /*0x5C*/ "", /*0x5D*/ "", /*0x5E*/ "", /*0x5F*/ "",
-        /*0x60*/ "", /*0x61*/ "", /*0x62*/ "", /*0x63*/ "", /*0x64*/ "", /*0x65*/ "", /*0x66*/ "", /*0x67*/ "", /*0x68*/ "", /*0x69*/ "", /*0x6A*/ "", /*0x6B*/ "", /*0x6C*/ "", /*0x6D*/ "", /*0x6E*/ "", /*0x6F*/ "",
-        /*0x70*/ "", /*0x71*/ "", /*0x72*/ "", /*0x73*/ "", /*0x74*/ "", /*0x75*/ "", /*0x76*/ "", /*0x77*/ "", /*0x78*/ "", /*0x79*/ "", /*0x7A*/ "", /*0x7B*/ "", /*0x7C*/ "", /*0x7D*/ "", /*0x7E*/ "", /*0x7F*/ "",
-        /*0x80*/ "", /*0x81*/ "", /*0x82*/ "", /*0x83*/ "", /*0x84*/ "", /*0x85*/ "", /*0x86*/ "", /*0x87*/ "", /*0x88*/ "", /*0x89*/ "", /*0x8A*/ "", /*0x8B*/ "", /*0x8C*/ "", /*0x8D*/ "", /*0x8E*/ "", /*0x8F*/ "",
-        /*0x90*/ "", /*0x91*/ "", /*0x92*/ "", /*0x93*/ "", /*0x94*/ "", /*0x95*/ "", /*0x96*/ "", /*0x97*/ "", /*0x98*/ "", /*0x99*/ "", /*0x9A*/ "", /*0x9B*/ "", /*0x9C*/ "", /*0x9D*/ "", /*0x9E*/ "", /*0x9F*/ "",
-        /*0xA0*/ "", /*0xA1*/ "", /*0xA2*/ "", /*0xA3*/ "", /*0xA4*/ "", /*0xA5*/ "", /*0xA6*/ "", /*0xA7*/ "AND A", /*0xA8*/ "", /*0xA9*/ "", /*0xAA*/ "", /*0xAB*/ "", /*0xAC*/ "", /*0xAD*/ "", /*0xAE*/ "", /*0xAF*/ "XOR A",
-        /*0xB0*/ "", /*0xB1*/ "", /*0xB2*/ "", /*0xB3*/ "", /*0xB4*/ "", /*0xB5*/ "", /*0xB6*/ "", /*0xB7*/ "", /*0xB8*/ "", /*0xB9*/ "", /*0xBA*/ "", /*0xBB*/ "", /*0xBC*/ "", /*0xBD*/ "", /*0xBE*/ "", /*0xBF*/ "",
-        /*0xC0*/ "", /*0xC1*/ "", /*0xC2*/ "", /*0xC3*/ "JP a16", /*0xC4*/ "", /*0xC5*/ "", /*0xC6*/ "", /*0xC7*/ "", /*0xC8*/ "", /*0xC9*/ "", /*0xCA*/ "", /*0xCB*/ "", /*0xCC*/ "", /*0xCD*/ "", /*0xCE*/ "", /*0xCF*/ "",
-        /*0xD0*/ "", /*0xD1*/ "", /*0xD2*/ "", /*0xD3*/ "", /*0xD4*/ "", /*0xD5*/ "", /*0xD6*/ "", /*0xD7*/ "", /*0xD8*/ "", /*0xD9*/ "", /*0xDA*/ "", /*0xDB*/ "", /*0xDC*/ "", /*0xDD*/ "", /*0xDE*/ "", /*0xDF*/ "",
-        /*0xE0*/ "LDH (a8),A", /*0xE1*/ "", /*0xE2*/ "", /*0xE3*/ "", /*0xE4*/ "", /*0xE5*/ "", /*0xE6*/ "", /*0xE7*/ "", /*0xE8*/ "", /*0xE9*/ "", /*0xEA*/ "", /*0xEB*/ "", /*0xEC*/ "", /*0xED*/ "", /*0xEE*/ "", /*0xEF*/ "",
-        /*0xF0*/ "LDH A,(a8)", /*0xF1*/ "", /*0xF2*/ "", /*0xF3*/ "DI", /*0xF4*/ "", /*0xF5*/ "", /*0xF6*/ "", /*0xF7*/ "", /*0xF8*/ "", /*0xF9*/ "", /*0xFA*/ "", /*0xFB*/ "", /*0xFC*/ "", /*0xFD*/ "", /*0xFE*/ "CP d8", /*0xFF*/ ""
-    };
     public final int F_C = 4, F_H = 5, F_N = 6, F_Z = 7;
     // registres du processeur
     public byte A = 0x00,
@@ -68,7 +71,7 @@ public class CPU extends AbstractHardware
     // Stack Pointer
     public short SP = (short) 0xFFFE,
             // Program Counter
-            // initialiszed to 0x0100
+            // initialized to 0x0100
             // first instruction in rom location
             PC = 0x0100;
     public byte[] rom;
@@ -115,6 +118,28 @@ public class CPU extends AbstractHardware
     }
 
     /**
+     * fonction de lecture de la mémoire
+     *
+     * @param memoryLocation
+     * @return
+     */
+    public byte getByteAt(int memoryLocation)
+    {
+        return this.memory[memoryLocation];
+    }
+
+    /**
+     * fonction d'écriture de la mémoire
+     * 
+     * @param memoryLocation
+     * @param value
+     */
+    public void setByteAt(int memoryLocation, byte value)
+    {
+        this.memory[memoryLocation] = value;
+    }
+
+    /**
      * charge une rom
      * @param rom
      */
@@ -134,16 +159,17 @@ public class CPU extends AbstractHardware
      */
     public void processOpCode()
     {
-        byte opCode = memory[PC];
+        byte opCode = this.getByteAt(PC);
         int addr;
+        byte[] splittedShort;
+
         String label = "";
 
         logger.info("=======================================");
-        logger.info(opCodeDescription[opCode & 0xFF]);
         logger.info("[" + Debug.toHex(opCode) + "] values: "
-                + Debug.toHex(memory[PC + 1]) + " "
-                + Debug.toHex(memory[PC + 2]) + " "
-                + Debug.toHex(memory[PC + 3]) + " ");
+                + Debug.toHex(this.getByteAt(PC + 1)) + " "
+                + Debug.toHex(this.getByteAt(PC + 2)) + " "
+                + Debug.toHex(this.getByteAt(PC + 3)) + " ");
 
         logger.info("F[ZNHC0000]");
         logger.info("F[" + Debug.toBin(F) + "]");
@@ -167,15 +193,15 @@ public class CPU extends AbstractHardware
             // LD BC,d16  3:12  - - - -
             case 0x01:
                 label = "LD BC,d16  3:12  - - - -";
-                B = memory[PC + 2];
-                C = memory[PC + 1];
+                B = this.getByteAt(PC + 2);
+                C = this.getByteAt(PC + 1);
                 PC += 3;
                 break;
 
             //LD (BC),A  1:8  - - - -
             case 0x02:
                 label = "LD (BC),A  1:8  - - - -";
-                memory[ByteUtil.combine(B, C)] = A;
+                this.setByteAt(ByteUtil.combine(B, C), A);
                 PC += 1;
                 break;
 
@@ -200,7 +226,7 @@ public class CPU extends AbstractHardware
             //LD B,d8  2:8  - - - -
             case 0x06:
                 label = "LD B,d8  2:8  - - - -";
-                B = memory[PC + 1];
+                B = this.getByteAt(PC + 1);
                 PC += 2;
                 break;
 
@@ -212,6 +238,8 @@ public class CPU extends AbstractHardware
             //LD (a16),SP  3:20  - - - -
             case 0x08:
                 label = "LD (a16),SP  3:20  - - - -";
+                this.setByteAt(ByteUtil.combine(this.getByteAt(PC + 2), this.getByteAt(PC + 1)), (byte) SP);
+                PC += 3;
                 break;
 
             //ADD HL,BC  1:8  - 0 H C
@@ -223,6 +251,8 @@ public class CPU extends AbstractHardware
             //LD A,(BC)  1:8  - - - -
             case 0x0A:
                 label = "LD A,(BC)  1:8  - - - -";
+                A = this.getByteAt(ByteUtil.combine(B, C));
+                PC += 1;
                 break;
 
             //DEC BC  1:8  - - - -
@@ -246,7 +276,7 @@ public class CPU extends AbstractHardware
             //LD C,d8  2:8  - - - -
             case 0x0E:
                 label = "LD C,d8  2:8  - - - -";
-                C = memory[PC + 1];
+                C = this.getByteAt(PC + 1);
                 PC += 2;
                 break;
 
@@ -263,11 +293,16 @@ public class CPU extends AbstractHardware
             //LD DE,d16  3:12  - - - -
             case 0x11:
                 label = "LD DE,d16  3:12  - - - -";
+                D = this.getByteAt(PC + 2);
+                E = this.getByteAt(PC + 1);
+                PC += 3;
                 break;
 
             //LD (DE),A  1:8  - - - -
             case 0x12:
                 label = "LD (DE),A  1:8  - - - -";
+                this.setByteAt(ByteUtil.combine(D, E), A);
+                PC += 1;
                 break;
 
             //INC DE  1:8  - - - -
@@ -291,6 +326,8 @@ public class CPU extends AbstractHardware
             //LD D,d8  2:8  - - - -
             case 0x16:
                 label = "LD D,d8  2:8  - - - -";
+                D = this.getByteAt(PC + 1);
+                PC += 2;
                 break;
 
             //RLA  1:4  0 0 0 C
@@ -301,7 +338,7 @@ public class CPU extends AbstractHardware
             //JR r8  2:12  - - - -
             case 0x18:
                 label = "JR r8  2:12  - - - -";
-                PC += (memory[PC + 1] & 0xff);
+                PC += (this.getByteAt(PC + 1) & 0xff);
                 break;
 
             //ADD HL,DE  1:8  - 0 H C
@@ -313,6 +350,8 @@ public class CPU extends AbstractHardware
             //LD A,(DE)  1:8  - - - -
             case 0x1A:
                 label = "LD A,(DE)  1:8  - - - -";
+                A = this.getByteAt(ByteUtil.combine(D, E));
+                PC += 1;
                 break;
 
             //DEC DE  1:8  - - - -
@@ -336,6 +375,8 @@ public class CPU extends AbstractHardware
             //LD E,d8  2:8  - - - -
             case 0x1E:
                 label = "LD E,d8  2:8  - - - -";
+                E = this.getByteAt(PC + 1);
+                PC += 2;
                 break;
 
             //RRA  1:4  0 0 0 C  
@@ -348,7 +389,7 @@ public class CPU extends AbstractHardware
                 label = "JR NZ,r8  2:12/8  - - - -";
                 if (getF(F_Z) == 0)
                 {
-                    PC += (memory[PC + 1]);
+                    PC += (this.getByteAt(PC + 1));
                 }
                 PC += 2;
                 break;
@@ -356,20 +397,17 @@ public class CPU extends AbstractHardware
             //LD HL,d16  3:12  - - - -
             case 0x21:
                 label = "LD HL,d16  3:12  - - - -";
-                H = memory[PC + 2];
-                L = memory[PC + 1];
+                H = this.getByteAt(PC + 2);
+                L = this.getByteAt(PC + 1);
                 PC += 3;
                 break;
 
             //LD (HL+),A  1:8  - - - -
             case 0x22:
                 label = "LD (HL+),A  1:8  - - - -";
-                addr = ByteUtil.combine(H, L);
-                memory[addr] = A;
-                addr++;
-                H = (byte) (addr >> 8 & 0xFF00);
-                L = (byte) (addr & 0x00FF);
-                PC++;
+                this.LD_HL(Register.A);
+                this.INC(Register.HL);
+                PC--;
                 break;
 
             //INC HL  1:8  - - - -
@@ -393,6 +431,8 @@ public class CPU extends AbstractHardware
             //LD H,d8  2:8  - - - -
             case 0x26:
                 label = "LD H,d8  2:8  - - - -";
+                H = this.getByteAt(PC + 1);
+                PC += 2;
                 break;
 
             //DAA  1:4  Z - 0 C
@@ -405,7 +445,7 @@ public class CPU extends AbstractHardware
                 label = "JR Z,r8  2:12/8  - - - -";
                 if (getF(F_Z) == 1)
                 {
-                    PC += (memory[PC + 1] & 0xff);
+                    PC += (this.getByteAt(PC + 1) & 0xff);
                 }
                 PC += 2;
                 break;
@@ -419,6 +459,8 @@ public class CPU extends AbstractHardware
             //LD A,(HL+)  1:8  - - - -
             case 0x2A:
                 label = "LD A,(HL+)  1:8  - - - -";
+                A = this.getByteAt(ByteUtil.combine(H, L));
+                this.INC(Register.HL);
                 break;
 
             //DEC HL  1:8  - - - -
@@ -442,6 +484,8 @@ public class CPU extends AbstractHardware
             //LD L,d8  2:8  - - - -
             case 0x2E:
                 label = "LD L,d8  2:8  - - - -";
+                L = this.getByteAt(PC + 1);
+                PC += 2;
                 break;
 
             //CPL  1:4  - 1 1 -  
@@ -458,7 +502,7 @@ public class CPU extends AbstractHardware
                 label = "JR NC,r8  2:12/8  - - - -";
                 if (getF(F_C) == 0)
                 {
-                    PC += (memory[PC + 1] & 0xff);
+                    PC += (this.getByteAt(PC + 1) & 0xff);
                 }
                 PC += 2;
                 break;
@@ -466,19 +510,16 @@ public class CPU extends AbstractHardware
             //LD SP,d16  3:12  - - - -
             case 0x31:
                 label = "LD SP,d16  3:12  - - - -";
-                SP = (short) ByteUtil.combine(memory[PC + 2], memory[PC + 1]);
+                SP = (short) ByteUtil.combine(this.getByteAt(PC + 2), this.getByteAt(PC + 1));
                 PC += 3;
                 break;
 
             //LD (HL-),A  1:8  - - - -
             case 0x32:
                 label = "LD (HL-),A  1:8  - - - -";
-                addr = ByteUtil.combine(H, L);
-                memory[addr] = A;
-                addr--;
-                H = (byte) ((addr & 0xFF00) >> 8);
-                L = (byte) (addr & 0x00FF);
-                PC++;
+                this.LD_HL(Register.A);
+                this.DEC(Register.HL);
+                PC--;
                 break;
 
             //INC SP  1:8  - - - -
@@ -496,12 +537,13 @@ public class CPU extends AbstractHardware
             //DEC (HL)  1:12  Z 1 H -
             case 0x35:
                 label = "DEC (HL)  1:12  Z 1 H -";
+                this.DEC(Register._HL_);
                 break;
 
             //LD (HL),d8  2:12  - - - -
             case 0x36:
                 label = "LD (HL),d8  2:12  - - - -";
-                memory[ByteUtil.combine(H, L)] = memory[PC + 1];
+                this.setByteAt(ByteUtil.combine(H, L), this.getByteAt(PC + 1));
                 PC += 2;
                 break;
 
@@ -515,7 +557,7 @@ public class CPU extends AbstractHardware
                 label = "JR C,r8  2:12/8  - - - -";
                 if (getF(F_C) == 1)
                 {
-                    PC += (memory[PC + 1] & 0xff);
+                    PC += (this.getByteAt(PC + 1) & 0xff);
                 }
                 PC += 2;
                 break;
@@ -529,6 +571,8 @@ public class CPU extends AbstractHardware
             //LD A,(HL-)  1:8  - - - -
             case 0x3A:
                 label = "LD A,(HL-)  1:8  - - - -";
+                A = this.getByteAt(ByteUtil.combine(H, L));
+                this.DEC(Register.HL);
                 break;
 
             //DEC SP  1:8  - - - -
@@ -546,15 +590,14 @@ public class CPU extends AbstractHardware
             //DEC A  1:4  Z 1 H -
             case 0x3D:
                 label = "DEC A  1:4  Z 1 H -";
-                this.DEC(Register.H);
+                this.DEC(Register.A);
                 break;
 
             //LD A,d8  2:8  - - - -
             case 0x3E:
                 label = "LD A,d8  2:8  - - - -";
-                PC++;
-                A = memory[PC];
-                PC++;
+                A = this.getByteAt(PC + 1);
+                PC += 2;
                 break;
 
             //CCF  1:4  - 0 0 C  
@@ -607,7 +650,7 @@ public class CPU extends AbstractHardware
             //LD B,(HL)  1:8  - - - -
             case 0x46:
                 label = "LD B,(HL)  1:8  - - - -";
-                B = memory[ByteUtil.combine(H, L)];
+                B = this.getByteAt(ByteUtil.combine(H, L));
                 PC++;
                 break;
 
@@ -663,7 +706,7 @@ public class CPU extends AbstractHardware
             //LD C,(HL)  1:8  - - - -
             case 0x4E:
                 label = "LD C,(HL)  1:8  - - - -";
-                C = memory[ByteUtil.combine(H, L)];
+                C = this.getByteAt(ByteUtil.combine(H, L));
                 PC++;
                 break;
 
@@ -719,7 +762,7 @@ public class CPU extends AbstractHardware
             //LD D,(HL)  1:8  - - - -
             case 0x56:
                 label = "LD D,(HL)  1:8  - - - -";
-                D = memory[ByteUtil.combine(H, L)];
+                D = this.getByteAt(ByteUtil.combine(H, L));
                 PC++;
                 break;
 
@@ -775,7 +818,7 @@ public class CPU extends AbstractHardware
             //LD E,(HL)  1:8  - - - -
             case 0x5E:
                 label = "LD E,(HL)  1:8  - - - -";
-                E = memory[ByteUtil.combine(H, L)];
+                E = this.getByteAt(ByteUtil.combine(H, L));
                 PC++;
                 break;
 
@@ -831,7 +874,7 @@ public class CPU extends AbstractHardware
             //LD H,(HL)  1:8  - - - -
             case 0x66:
                 label = "LD H,(HL)  1:8  - - - -";
-                H = memory[ByteUtil.combine(H, L)];
+                H = this.getByteAt(ByteUtil.combine(H, L));
                 PC++;
                 break;
 
@@ -887,7 +930,7 @@ public class CPU extends AbstractHardware
             //LD L,(HL)  1:8  - - - -
             case 0x6E:
                 label = "LD L,(HL)  1:8  - - - -";
-                L = memory[ByteUtil.combine(H, L)];
+                L = this.getByteAt(ByteUtil.combine(H, L));
                 PC++;
                 break;
 
@@ -990,7 +1033,7 @@ public class CPU extends AbstractHardware
             //LD A,(HL)  1:8  - - - -
             case 0x7E:
                 label = "LD A,(HL)  1:8  - - - -";
-                A = memory[ByteUtil.combine(H, L)];
+                A = this.getByteAt(ByteUtil.combine(H, L));
                 PC++;
                 break;
 
@@ -1040,6 +1083,7 @@ public class CPU extends AbstractHardware
             //ADD A,(HL)  1:8  Z 0 H C
             case 0x86:
                 label = "ADD A,(HL)  1:8  Z 0 H C";
+                this.ADD_X_X(Register.A, Register._HL_);
                 break;
 
             //ADD A,A  1:4  Z 0 H C
@@ -1051,41 +1095,49 @@ public class CPU extends AbstractHardware
             //ADC A,B  1:4  Z 0 H C
             case 0x88:
                 label = "ADC A,B  1:4  Z 0 H C";
+                this.ADC(Register.B);
                 break;
 
             //ADC A,C  1:4  Z 0 H C
             case 0x89:
                 label = "ADC A,C  1:4  Z 0 H C";
+                this.ADC(Register.C);
                 break;
 
             //ADC A,D  1:4  Z 0 H C
             case 0x8A:
                 label = "ADC A,D  1:4  Z 0 H C";
+                this.ADC(Register.D);
                 break;
 
             //ADC A,E  1:4  Z 0 H C
             case 0x8B:
                 label = "ADC A,E  1:4  Z 0 H C";
+                this.ADC(Register.E);
                 break;
 
             //ADC A,H  1:4  Z 0 H C
             case 0x8C:
                 label = "ADC A,H  1:4  Z 0 H C";
+                this.ADC(Register.H);
                 break;
 
             //ADC A,L  1:4  Z 0 H C
             case 0x8D:
                 label = "ADC A,L  1:4  Z 0 H C";
+                this.ADC(Register.L);
                 break;
 
             //ADC A,(HL)  1:8  Z 0 H C
             case 0x8E:
                 label = "ADC A,(HL)  1:8  Z 0 H C";
+                this.ADC(Register._HL_);
                 break;
 
             //ADC A,A  1:4  Z 0 H C  
             case 0x8F:
                 label = "ADC A,A  1:4  Z 0 H C  ";
+                this.ADC(Register.A);
                 break;
 
             //SUB B  1:4  Z 1 H C
@@ -1394,7 +1446,7 @@ public class CPU extends AbstractHardware
             //JP a16  3:16  - - - -
             case 0xC3:
                 label = "JP a16  3:16  - - - -";
-                PC = (short) ByteUtil.combine(memory[PC + 2], memory[PC + 1]);
+                PC = (short) ByteUtil.combine(this.getByteAt(PC + 2), this.getByteAt(PC + 1));
                 break;
 
             //CALL NZ,a16  3:24/12  - - - -
@@ -1410,6 +1462,7 @@ public class CPU extends AbstractHardware
             //ADD A,d8  2:8  Z 0 H C
             case 0xC6:
                 label = "ADD A,d8  2:8  Z 0 H C";
+                this.ADD_X_X(Register.A, Register.n);
                 break;
 
             //RST 00H  1:16  - - - -
@@ -1456,7 +1509,7 @@ public class CPU extends AbstractHardware
                 label = "CALL Z,a16  3:24/12  - - - -";
                 if (getF(F_Z) == 1)
                 {
-                    PC = (short) ByteUtil.combine(memory[PC + 2], memory[PC + 1]);
+                    PC = (short) ByteUtil.combine(this.getByteAt(PC + 2), this.getByteAt(PC + 1));
                 }
                 else
                 {
@@ -1472,21 +1525,25 @@ public class CPU extends AbstractHardware
             //ADC A,d8  2:8  Z 0 H C
             case 0xCE:
                 label = "ADC A,d8  2:8  Z 0 H C";
+                this.ADC(Register.n);
+                /*
                 A = (byte) (memory[PC + 1] + getF(F_C));
                 if (A == 0)
                 {
-                    setF(F_Z, 1);
+                setF(F_Z, 1);
                 }
                 setF(F_N, 0);
                 if (getBit(A, 3) == 1)
                 {
-                    setF(F_H, 1); // if carry from bit 3
+                setF(F_H, 1); // if carry from bit 3
                 }
                 if (getBit(A, 7) == 1)
                 {
-                    setF(F_C, 1); // if carry from bit 7
+                setF(F_C, 1); // if carry from bit 7
                 }
                 PC += 2;
+                 * 
+                 */
                 break;
 
             //RST 08H  1:16  - - - -  
@@ -1522,6 +1579,7 @@ public class CPU extends AbstractHardware
             //SUB d8  2:8  Z 1 H C
             case 0xD6:
                 label = "SUB d8  2:8  Z 1 H C";
+                this.SUB(Register.n);
                 break;
 
             //RST 10H  1:16  - - - -
@@ -1552,6 +1610,7 @@ public class CPU extends AbstractHardware
             //SBC A,d8  2:8  Z 1 H C
             case 0xDE:
                 label = "SBC A,d8  2:8  Z 1 H C";
+                this.SBC(Register.n);
                 break;
 
             //RST 18H  1:16  - - - -  
@@ -1562,7 +1621,7 @@ public class CPU extends AbstractHardware
             //LDH (a8),A  2:12  - - - -
             case 0xE0:
                 label = "LDH (a8),A  2:12  - - - -";
-                memory[0xFF00 + (memory[PC + 1] & 0xff)] = A;
+                this.setByteAt(0xFF00 + (this.getByteAt(PC + 1) & 0xff), A);
                 PC += 2;
                 break;
 
@@ -1574,6 +1633,8 @@ public class CPU extends AbstractHardware
             //LD (C),A  2:8  - - - -
             case 0xE2:
                 label = "LD (C),A  2:8  - - - -";
+                this.setByteAt(0xFF00 + (C & 0xFF), A);
+                PC += 2;
                 break;
 
             //PUSH HL  1:16  - - - -
@@ -1584,15 +1645,7 @@ public class CPU extends AbstractHardware
             //AND d8  2:8  Z 0 1 0
             case 0xE6:
                 label = "AND d8  2:8  Z 0 1 0";
-                A = (byte) (A & memory[PC + 1]);
-                if (A == 0)
-                {
-                    setF(F_Z, 1);
-                }
-                setF(F_N, 0);
-                setF(F_H, 1);
-                setF(F_C, 0);
-                PC += 2;
+                this.AND(Register.n);
                 break;
 
             //RST 20H  1:16  - - - -
@@ -1603,6 +1656,7 @@ public class CPU extends AbstractHardware
             //ADD SP,r8  2:16  0 0 H C
             case 0xE8:
                 label = "ADD SP,r8  2:16  0 0 H C";
+                this.ADD_X_X(Register.SP, Register.n);
                 break;
 
             //JP (HL)  1:4  - - - -
@@ -1613,13 +1667,14 @@ public class CPU extends AbstractHardware
             //LD (a16),A  3:16  - - - -
             case 0xEA:
                 label = "LD (a16),A  3:16  - - - -";
-                memory[ByteUtil.combine(memory[PC + 2], memory[PC + 1])] = A;
+                this.setByteAt(ByteUtil.combine(this.getByteAt(PC + 2), this.getByteAt(PC + 1)), A);
                 PC += 3;
                 break;
 
             //XOR d8  2:8  Z 0 0 0
             case 0xEE:
                 label = "XOR d8  2:8  Z 0 0 0";
+                this.XOR(Register.n);
                 break;
 
             //RST 28H  1:16  - - - -  
@@ -1630,7 +1685,7 @@ public class CPU extends AbstractHardware
             //LDH A,(a8)  2:12  - - - -
             case 0xF0:
                 label = "LDH A,(a8)  2:12  - - - -";
-                A = memory[0xFF00 + (memory[PC + 1] & 0xff)];
+                A = this.getByteAt(0xFF00 + (this.getByteAt(PC + 1) & 0xff));
                 PC += 2;
                 break;
 
@@ -1642,6 +1697,8 @@ public class CPU extends AbstractHardware
             //LD A,(C)  2:8  - - - -
             case 0xF2:
                 label = "LD A,(C)  2:8  - - - -";
+                A = this.getByteAt(0xFF00 + (C & 0xFF));
+                PC += 2;
                 break;
 
             //DI  1:4  - - - -
@@ -1658,6 +1715,7 @@ public class CPU extends AbstractHardware
             //OR d8  2:8  Z 0 0 0
             case 0xF6:
                 label = "OR d8  2:8  Z 0 0 0";
+                this.OR(Register.n);
                 break;
 
             //RST 30H  1:16  - - - -
@@ -1673,12 +1731,14 @@ public class CPU extends AbstractHardware
             //LD SP,HL  1:8  - - - -
             case 0xF9:
                 label = "LD SP,HL  1:8  - - - -";
+                SP = (short) ByteUtil.combine(H, L);
+                PC += 1;
                 break;
 
             //LD A,(a16)  3:16  - - - -
             case 0xFA:
                 label = "LD A,(a16)  3:16  - - - -";
-                A = memory[ByteUtil.combine(memory[PC + 2], memory[PC + 1])];
+                A = this.getByteAt(ByteUtil.combine(this.getByteAt(PC + 2), this.getByteAt(PC + 1)));
                 PC += 3;
                 break;
 
@@ -1690,6 +1750,8 @@ public class CPU extends AbstractHardware
             //CP d8  2:8  Z 1 H C
             case 0xFE:
                 label = "CP d8  2:8  Z 1 H C";
+                this.CP(Register.n);
+                /*
                 byte result = (byte) ((A - memory[PC]) & 0xff);
                 if (result == 0)
                 {
@@ -1703,6 +1765,8 @@ public class CPU extends AbstractHardware
                 }
 
                 PC += 2;
+                 * 
+                 */
                 break;
 
             //RST 38H  1:16  - - - -
@@ -1797,7 +1861,7 @@ public class CPU extends AbstractHardware
                 System.out.println("erreur pas géré le ld");
         }
 
-        memory[ByteUtil.combine(H, L)] = value;
+        this.setByteAt(ByteUtil.combine(H, L), value);
         PC++;
     }
 
@@ -1809,9 +1873,14 @@ public class CPU extends AbstractHardware
     {
         int result = -1;
         boolean halfCarry = false;
+        byte[] splittedShort;
+
         switch (register)
         {
             case A:
+                A--;
+                result = A;
+                halfCarry = ((A & 0xf) == 0xf);
                 break;
             case B:
                 B--;
@@ -1853,16 +1922,16 @@ public class CPU extends AbstractHardware
                 BC--;
                 result = BC;
                 B = (byte) (BC >> 8 & 0xFF);
-                C = (byte) (BC & 0x00FF);
+                C = (byte) (BC & 0xFF);
                 halfCarry = C == 0;
                 break;
             case DE:
                 int DE = ByteUtil.combine(D, E);
                 DE--;
                 result = DE;
-                D = (byte) (DE >> 8 & 0xFF00);
-                E = (byte) (DE & 0x00FF);
-                halfCarry = E == 0;
+                splittedShort = ByteUtil.split(result);
+                D = splittedShort[0];
+                E = splittedShort[1];
                 break;
             case SP:
                 SP--;
@@ -1872,9 +1941,12 @@ public class CPU extends AbstractHardware
                 int HLValue = ByteUtil.combine(H, L);
                 HLValue--;
                 result = HLValue;
-                H = (byte) (HLValue >> 8 & 0xFF);
-                L = (byte) (HLValue & 0x00FF);
-                halfCarry = L == 0;
+                splittedShort = ByteUtil.split(HLValue);
+                H = splittedShort[0];
+                L = splittedShort[1];
+                break;
+            case _HL_:
+                memory[ByteUtil.combine(H, L)]--;
                 break;
         }
 
@@ -1951,6 +2023,8 @@ public class CPU extends AbstractHardware
         boolean doubleRegister = false;
         byte theValueAfter = 0x00;
         byte theValueBefore = 0x00;
+        int doubleValue;
+        byte[] splited;
 
         switch (register)
         {
@@ -1996,12 +2070,27 @@ public class CPU extends AbstractHardware
                 break;
             case HL:
                 doubleRegister = true;
+                doubleValue = ByteUtil.combine(H, L);
+                doubleValue++;
+                splited = ByteUtil.split(doubleValue);
+                H = splited[0];
+                L = splited[1];
                 break;
             case BC:
                 doubleRegister = true;
+                doubleValue = ByteUtil.combine(B, C);
+                doubleValue++;
+                splited = ByteUtil.split(doubleValue);
+                B = splited[0];
+                C = splited[1];
                 break;
             case DE:
                 doubleRegister = true;
+                doubleValue = ByteUtil.combine(D, E);
+                doubleValue++;
+                splited = ByteUtil.split(doubleValue);
+                D = splited[0];
+                E = splited[1];
                 break;
             case SP:
                 doubleRegister = true;
@@ -2061,6 +2150,13 @@ public class CPU extends AbstractHardware
                 break;
             case L:
                 theValue = L;
+                break;
+            case _HL_:
+                theValue = this.getByteAt(ByteUtil.combine(H, L));
+                break;
+            case n:
+                theValue = this.getByteAt(PC + 1);
+                PC += 1;
                 break;
             default:
         }
@@ -2136,6 +2232,81 @@ public class CPU extends AbstractHardware
         PC += 1;
     }
 
+    private void ADC(Register register)
+    {
+        byte theValueBefore = A;
+        byte theValue = 0x00;
+        byte theResult = 0x00;
+        boolean halfCarry = false;
+
+        switch (register)
+        {
+            case A:
+                theValue = A;
+                break;
+            case B:
+                theValue = B;
+                break;
+            case C:
+                theValue = C;
+                break;
+            case D:
+                theValue = D;
+                break;
+            case E:
+                theValue = E;
+                break;
+            case H:
+                theValue = H;
+                break;
+            case L:
+                theValue = L;
+                break;
+            case _HL_:
+                theValue = this.getByteAt(ByteUtil.combine(H, L));
+                break;
+            case n:
+                theValue = this.getByteAt(PC + 1);
+                PC += 1;
+                break;
+            default:
+        }
+
+        A += theValue;
+        A += getF(F_C);
+
+        theResult = A;
+
+        if (this.needHalfCarry(theValueBefore, theResult))
+        {
+            halfCarry = true;
+        }
+
+        setF(F_Z, 0);
+        if (theResult == 0)
+        {
+            setF(F_Z, 1);
+        }
+
+        // addition donc 0
+        setF(F_N, 0);
+
+        setF(F_C, 0);
+        if (this.needCarry(theValueBefore, theValue))
+        {
+            setF(F_C, 1);
+        }
+
+        // half carry
+        setF(F_H, 0);
+        if (this.needHalfCarry(theValueBefore, theResult))
+        {
+            setF(F_H, 1);
+        }
+
+        PC += 1;
+    }
+
     private void SUB(Register register)
     {
         byte theValue = 0x00;
@@ -2167,7 +2338,11 @@ public class CPU extends AbstractHardware
                 theValue = L;
                 break;
             case _HL_:
-                theValue = memory[ByteUtil.combine(H, L)];
+                theValue = this.getByteAt(ByteUtil.combine(H, L));
+                break;
+            case n:
+                theValue = this.getByteAt(PC + 1);
+                PC += 1;
                 break;
         }
 
@@ -2227,7 +2402,11 @@ public class CPU extends AbstractHardware
                 theValue = L;
                 break;
             case _HL_:
-                theValue = memory[ByteUtil.combine(H, L)];
+                theValue = this.getByteAt(ByteUtil.combine(H, L));
+                break;
+            case n:
+                theValue = this.getByteAt(PC + 1);
+                PC += 1;
                 break;
         }
 
@@ -2288,8 +2467,11 @@ public class CPU extends AbstractHardware
                 theValue = L;
                 break;
             case _HL_:
-                theValue = memory[ByteUtil.combine(H, L)];
+                theValue = this.getByteAt(ByteUtil.combine(H, L));
                 break;
+            case n:
+                theValue = this.getByteAt(PC + 1);
+                PC += 1;
         }
 
         A &= theValue;
@@ -2338,7 +2520,11 @@ public class CPU extends AbstractHardware
                 theValue = L;
                 break;
             case _HL_:
-                theValue = memory[ByteUtil.combine(H, L)];
+                theValue = this.getByteAt(ByteUtil.combine(H, L));
+                break;
+            case n:
+                theValue = this.getByteAt(PC + 1);
+                PC += 1;
                 break;
         }
 
@@ -2387,7 +2573,11 @@ public class CPU extends AbstractHardware
                 theValue = L;
                 break;
             case _HL_:
-                theValue = memory[ByteUtil.combine(H, L)];
+                theValue = this.getByteAt(ByteUtil.combine(H, L));
+                break;
+            case n:
+                theValue = this.getByteAt(PC + 1);
+                PC += 1;
                 break;
         }
 
@@ -2436,21 +2626,25 @@ public class CPU extends AbstractHardware
                 theValue = L;
                 break;
             case _HL_:
-                theValue = memory[ByteUtil.combine(H, L)];
+                theValue = this.getByteAt(ByteUtil.combine(H, L));
+                break;
+            case n:
+                theValue = this.getByteAt(PC + 1);
+                PC += 1;
                 break;
         }
 
         byte theResult = (byte) (A - theValue);
-        
+
         setF(F_Z, 0);
         if (theResult == 0x00)
         {
             setF(F_Z, 1);
         }
-        
+
         // soustraction
         setF(F_N, 1);
-        
+
         setF(F_H, 0);
         if ((((theResult & 0x0f) - (theValue & 0x0f)) & 0x10) != 0)
         {

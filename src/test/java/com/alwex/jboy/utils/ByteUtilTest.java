@@ -40,4 +40,16 @@ public class ByteUtilTest
 
         assertEquals(0x1040, c);
     }
+
+    @Test
+    public void testSplitOfInt()
+    {
+        int value = 0xFF06;
+        byte[] result = ByteUtil.split(value);
+
+        System.out.println(ByteUtil.toHex(result[0]) + " " + ByteUtil.toHex(result[1]));
+
+        assertEquals((byte) 0xFF, result[0]);
+        assertEquals(0x06, result[1]);
+    }
 }
