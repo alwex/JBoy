@@ -21,7 +21,7 @@ public class CPU extends AbstractHardware
     public enum Register
     {
 
-        A, B, C, D, E, F, H, L, HL, BC, DE, SP, F_C, F_H, F_N, F_Z, n, nn, _HL_;
+        A, B, C, D, E, F, H, L, AF, HL, BC, DE, SP, F_C, F_H, F_N, F_Z, n, nn, _HL_;
     }
     // registres spéciaux valeurs en mémoire
     public int P1 = 0xFF00, // joypad infos and system type RW
@@ -77,6 +77,18 @@ public class CPU extends AbstractHardware
     public byte[] rom;
     // pourquoi + 1 ?
     public byte[] memory = new byte[0xFFFF + 1];
+    // découpage de la mémoire
+    public int memStart_16kBRomBank0 = 0x0000,
+            memStart_16kBSwitchableRomBank = 0x4000,
+            memStart_8kBVideoRam = 0x8000,
+            memStart_8kBSwitcableRamBank = 0xA000,
+            memStart_8kBInternalRam = 0xC000,
+            memStart_8kBEchoInternalRam = 0xE000,
+            memStart_spriteAttributeMemory = 0xFE00,
+            memStart_emptyButNotUsableForIO1 = 0xFEA0,
+            memStart_IOPorts = 0xFF00,
+            memStart_emptyButNotUsableForIO2 = 0xFF80,
+            memStart_interruptEnableRegister = 0xFFFF;
 
     public static CPU getInstance()
     {
@@ -233,6 +245,24 @@ public class CPU extends AbstractHardware
             //RLCA  1:4  0 0 0 C
             case 0x07:
                 label = "RLCA  1:4  0 0 0 C";
+
+                if ((A & (1 << 7)) != 0)
+                {
+                    this.setF(F_C, 1);
+                }
+                else
+                {
+                    this.setF(F_C, 0);
+                }
+
+                A <<= 1;
+                PC += 1;
+
+                if (A == 0)
+                {
+                    this.setF(F_Z, 1);
+                }
+
                 break;
 
             //LD (a16),SP  3:20  - - - -
@@ -283,6 +313,22 @@ public class CPU extends AbstractHardware
             //RRCA  1:4  0 0 0 C  
             case 0x0F:
                 label = "RRCA  1:4  0 0 0 C  ";
+                if ((A & 0x01) != 0)
+                {
+                    this.setF(F_C, 1);
+                }
+                else
+                {
+                    this.setF(F_C, 0);
+                }
+
+                A >>= 1;
+                PC += 1;
+
+                if (A == 0)
+                {
+                    this.setF(F_Z, 1);
+                }
                 break;
 
             //STOP 0  2:4  - - - -
@@ -1436,6 +1482,7 @@ public class CPU extends AbstractHardware
             //POP BC  1:12  - - - -
             case 0xC1:
                 label = "POP BC  1:12  - - - -";
+                this.POP(Register.BC);
                 break;
 
             //JP NZ,a16  3:16/12  - - - -
@@ -1559,6 +1606,7 @@ public class CPU extends AbstractHardware
             //POP DE  1:12  - - - -
             case 0xD1:
                 label = "POP DE  1:12  - - - -";
+                this.POP(Register.DE);
                 break;
 
             //JP NC,a16  3:16/12  - - - -
@@ -1628,6 +1676,7 @@ public class CPU extends AbstractHardware
             //POP HL  1:12  - - - -
             case 0xE1:
                 label = "POP HL  1:12  - - - -";
+                this.POP(Register.HL);
                 break;
 
             //LD (C),A  2:8  - - - -
@@ -1692,6 +1741,7 @@ public class CPU extends AbstractHardware
             //POP AF  1:12  Z N H C
             case 0xF1:
                 label = "POP AF  1:12  Z N H C";
+                this.POP(Register.AF);
                 break;
 
             //LD A,(C)  2:8  - - - -
@@ -1755,13 +1805,13 @@ public class CPU extends AbstractHardware
                 byte result = (byte) ((A - memory[PC]) & 0xff);
                 if (result == 0)
                 {
-                    setF(F_Z, 1);
+                setF(F_Z, 1);
                 }
                 setF(F_N, 1);
                 setF(F_H, 1); // FIXME set if no borrow from bit 4
                 if (result < 0)
                 {
-                    setF(F_C, 1);
+                setF(F_C, 1);
                 }
 
                 PC += 2;
@@ -2658,6 +2708,34 @@ public class CPU extends AbstractHardware
         }
 
         PC += 1;
+    }
+
+    public void POP(Register register)
+    {
+        byte[] splittedShort = ByteUtil.split(SP);
+
+        switch (register)
+        {
+            case AF:
+                A = this.getByteAt(SP + 1);
+                F = this.getByteAt(SP);
+                break;
+            case BC:
+                B = this.getByteAt(SP + 1);
+                C = this.getByteAt(SP);
+                break;
+            case HL:
+                H = this.getByteAt(SP + 1);
+                L = this.getByteAt(SP);
+                break;
+            case DE:
+                D = this.getByteAt(SP + 1);
+                E = this.getByteAt(SP);
+                break;
+        }
+        
+        PC += 1;
+        SP += 2;
     }
 
     public boolean needCarry(byte before, byte added)

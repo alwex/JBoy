@@ -202,7 +202,7 @@ public class Sandbox
     }
 
     @Test
-    public void testHalCarryDetection()
+    public void testHalfCarryDetection()
     {
         byte a = 0x1F, b = 0x01;
         System.out.println(ByteUtil.toHex((byte) (a & 0xf0)));
@@ -212,4 +212,5 @@ public class Sandbox
 
         System.out.println(ByteUtil.toHex((byte) (0x10 & 0x10)));
     }
+
 }
